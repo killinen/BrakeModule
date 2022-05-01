@@ -26,6 +26,7 @@ I'm not sure if these are compatible cars, eg. is BOSCH 5.7 system == charge pum
 The SOFTWARE has been designed to read braking demand values from CAN bus that are sent from OPENPILOT. OPENPILOT (OP) is opensource semiautonomous system (software) that can possibly be retrofitted to your car to have LEVEL 2 autonomous system. The OPENPILOT needs to be able to control longnitudinal (acceleration and deceleratio) and lateral (steering) via CAN bus. 
 
 Video of openpilot.
+
 [![Watch the video](https://img.youtube.com/vi/NmBfgOanCyk/default.jpg)](https://youtu.be/NmBfgOanCyk)
 
 This module could be used with other adaptive cruise control systems (ACC) with modifying the software.
@@ -56,12 +57,16 @@ Main principle of driving charge pump and brakelight switch with BrakeModule.
   <img src="Pics/BMmain.PNG?raw=true">
 </p>
 
-Picture of BrakeModule.
+Picture of PCB of BrakeModule v0.2.
 <p align="center">
   <img src="Pics/BM0.2.PNG?raw=true">
 </p>
 
 BrakeModule PCB is mounted on 3D-printed case with 4 relay module, and attachments for the fan.
+Picture of BrakeModule.
+<p align="center">
+  <img src="BM.jpg?raw=true">
+</p>
 
 The PCB layout is much improved on the next generation and should not give too much thought. Example there are not use of 2 power MOSFETs (TO220 and TO252) these slots are for testing purposes.
 
