@@ -65,7 +65,7 @@ Picture of PCB of BrakeModule v0.2.
 BrakeModule PCB is mounted on 3D-printed case with 4 relay module, and attachments for the fan.
 Picture of BrakeModule.
 <p align="center">
-  <img src="BM.jpg?raw=true">
+  <img src="BM.jpg?">
 </p>
 
 The PCB layout is much improved on the next generation and should not give too much thought. Example there are not use of 2 power MOSFETs (TO220 and TO252) these slots are for testing purposes.
