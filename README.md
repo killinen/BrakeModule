@@ -17,6 +17,9 @@ This module has been developed with use of car which uses BOSCH ABS 5.7 Dynamic 
 
 List of BOSCH 5.7 used cars.
 
+<p align="center">
+  <img src="Pics/Bosch57cars.PNG?raw=true">
+</p>
 Some list of of cars that use BOSCH 5.7 system found on the internet.
 I'm not sure if these are compatible cars, eg. is BOSCH 5.7 system == charge pump system eg. DSCII (or similar), that needs to be in place to brake the car?
 
