@@ -15,17 +15,18 @@ If you have better knowledge than I, please contribute on developing this.
 
 This module has been developed with use of car which uses BOSCH ABS 5.7 Dynamic Stability Control system 3 (DSCIII). This system is used on several different cars so it could possibly be used with these car only software modification. The description of the system is what I have found on my system, yours may vary. I also make a lot of assumptions of how the system works on based on what I have seen but I don't have near close to 100% certainty of it. There might be a change this could be used on BOSCH 5.3 system if DSCIII implemented.
 
-List of BOSCH 5.7 used cars.
+Some list of of cars that use BOSCH 5.7 system found on the internet.
 
-<p align="center">
+<p align="left">
   <img src="Pics/Bosch57cars.PNG?raw=true">
 </p>
-Some list of of cars that use BOSCH 5.7 system found on the internet.
+
 I'm not sure if these are compatible cars, eg. is BOSCH 5.7 system == charge pump system eg. DSCII (or similar), that needs to be in place to brake the car?
 
 The SOFTWARE has been designed to read braking demand values from CAN bus that are sent from OPENPILOT. OPENPILOT (OP) is opensource semiautonomous system (software) that can possibly be retrofitted to your car to have LEVEL 2 autonomous system. The OPENPILOT needs to be able to control longnitudinal (acceleration and deceleratio) and lateral (steering) via CAN bus. 
 
-Video of openpilot here.
+Video of openpilot.
+[![Watch the video](https://img.youtube.com/vi/NmBfgOanCyk/default.jpg)](https://youtu.be/NmBfgOanCyk)
 
 This module could be used with other adaptive cruise control systems (ACC) with modifying the software.
 
@@ -35,9 +36,12 @@ This module could be used with other adaptive cruise control systems (ACC) with 
 
 Working principle of the module is 1. to intercept the ABS unit from the charge pump (note: not the ABS pump!) and connect the charge pump wire from ABS module with resistor so that the ABS "thinks" that the pump is connected (if wires are disconnected ABS module throws an charge pump error). 2. Connect 12V to the pump and use N-channel power MOSFET to adjust to charge pump yield (brake pressure). 3. One has to manipulate also the cars brake light (pedal) switch because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. Brake light switch has 4 wires: 12V, ground, signal LOW, signal 2 HIGH. Signal LOW is grounded and signal HIGH is floating when pedal not pressed. When pedal is pressed, signal LOW is floating and signal HIGH is connected to 12V.
 
-Picture of BOSCH system.
+Picture of BOSCH system with DSCIII.
+<p align="left">
+  <img src="Pics/DSCIII.PNG?raw=true">
+</p>
 
-Further knowledge on how BOSCH 5.7/DSCIII works, read pdf on the repo.
+Further knowledge on how BOSCH 5.7/DSCIII works, look at dsc_system.pdf on the repo.
 
 ---
 
@@ -47,9 +51,15 @@ Brakemodule main functionalities are. 3 relays for switching charge pump inline 
 
 In this development stage the main components of the hardware is LGT8F328P LQFP32 MiniEVB (can work w Nano also), MCP2515 CAN module, 4 relay module, Infineon FR407 N-chan power MOSFET, MCP1406 gate driver IC, 2 N7000 N-chan MOSFET, NPN3904 transistor, BS250 P-chan MOSFET, DS18B20 temperature sensor.
 
-Picture of pump control.
+Main principle of driving charge pump and brakelight switch with BrakeModule.
+<p align="center">
+  <img src="Pics/BMmain.PNG?raw=true">
+</p>
 
 Picture of BrakeModule.
+<p align="center">
+  <img src="Pics/BM0.2.PNG?raw=true">
+</p>
 
 BrakeModule PCB is mounted on 3D-printed case with 4 relay module, and attachments for the fan.
 
@@ -69,7 +79,9 @@ The next generation of the board is planned to have an Blue Pill development boa
 - Maybe use of different kind of pwr MOSFET
 - Add 12V to 5V buck converter module
 
-Picture of PCB
+<p align="center">
+  <img src="Pics/BM03.PNG?raw=true">
+</p>
 
 ---
 
