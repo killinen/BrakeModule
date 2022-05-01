@@ -27,7 +27,7 @@ The SOFTWARE has been designed to read braking demand values from CAN bus that a
 
 Video of openpilot.
 
-[![](https://img.youtube.com/vi/NmBfgOanCyk/default.jpg)](https://youtu.be/NmBfgOanCyk)
+[![](https://img.youtube.com/vi/NmBfgOanCyk/0.jpg)](https://youtu.be/NmBfgOanCyk)
 
 This module could be used with other adaptive cruise control systems (ACC) with modifying the software.
 
