@@ -55,6 +55,8 @@ Handwritten schematic of the driving circuit of the charge pump.
 
 If someone want's to deep dive closer on Bosch DSC 5.7 ABS Module Diagnosis and Repair read this great post: https://www.bimmerfest.com/threads/bosch-dsc-5-7-abs-module-diagnosis-and-repair.822139/#post-8854110 (the pics are stolen from it).
 
+Further knowledge on how BOSCH 5.7/DSCIII works, look at dsc_system.pdf on the repo.
+
 Main thesis of how the BrakeModule works is 1. to disconnect the BOSCH control module from the charge pump and connect the charge pump wires from module with resistor so that the control module "thinks" that the pump is connected. If wires are disconnected, module throws an charge pump error, because it will detect open circuit with the feedback lines (f/b) shown in handwritten schematic. 2. Connect 12V to the pump and use N-channel power MOSFET to adjust to charge pump yield (brake pressure). 3. One has to manipulate also the cars brake light (pedal) switch because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. 
 
 Main principle of driving charge pump and brakelight switch with BrakeModule.
@@ -71,9 +73,6 @@ In E39 The DME control unit evaluates the signals for the purpose of registering
 <p align="center">
   <img src="Pics/BLS_logik.PNG?raw=true">
 </p>
-
-
-Further knowledge on how BOSCH 5.7/DSCIII works, look at dsc_system.pdf on the repo.
 
 ABS module/DSC hydraylic unit shown in M54 engine bay.
 <p align="left">
