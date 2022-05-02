@@ -55,7 +55,7 @@ Handwritten schematic of the driving circuit of the charge pump.
 
 If someone want's to deep dive closer on Bosch DSC 5.7 ABS Module Diagnosis and Repair read this great post: https://www.bimmerfest.com/threads/bosch-dsc-5-7-abs-module-diagnosis-and-repair.822139/#post-8854110 (the pics are stolen from it).
 
-Main thesis of how the BrakeModule works is 1. to disconnect the BOSCH control module from the charge pump and connect the charge pump wires from module with resistor so that the control module "thinks" that the pump is connected. If wires are disconnected, module throws an charge pump error, because it will detect open circuit with the feedback lines shown in handwritten schematic. 2. Connect 12V to the pump and use N-channel power MOSFET to adjust to charge pump yield (brake pressure). 3. One has to manipulate also the cars brake light (pedal) switch because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. 
+Main thesis of how the BrakeModule works is 1. to disconnect the BOSCH control module from the charge pump and connect the charge pump wires from module with resistor so that the control module "thinks" that the pump is connected. If wires are disconnected, module throws an charge pump error, because it will detect open circuit with the feedback lines (f/b) shown in handwritten schematic. 2. Connect 12V to the pump and use N-channel power MOSFET to adjust to charge pump yield (brake pressure). 3. One has to manipulate also the cars brake light (pedal) switch because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. 
 
 Main principle of driving charge pump and brakelight switch with BrakeModule.
 <p align="center">
@@ -128,17 +128,19 @@ The next generation of the board is planned to have an Blue Pill development boa
 
 ## SOFTWARE
 
-The software has been developed in arduino IDE to LGT8F328P board with Arduino Nano compability in mind. The next generation of the module most likely uses Blue Pill development board (STM32F103). Normally precharge pump is controlled via BOSCH ABS module (relays are on NC mode) but when decelaration demand from OP is detected on CAN msg 0x343 (ACC_CMD), it'll disconnects the ABS module from the pump and start controlling the pump with ~2 kHz PWM signal of the power MOSFET (relays state are switched OFF from NC mode). Also brake light swithes HIGH and LOW signal lines are driven so that the car detects brake pedal pressed event. DS18B20 temperature measurements from power MOSFET every 10 seconds and small fan turn on if over 45 degrees is detecteted. Also if temperature exceeds 80 degrees, brake module will disable OPENPILOT if it is on control and wont engage until temperature is below that.
+The software has been developed in arduino IDE to LGT8F328P board with Arduino Nano compability in mind. The next generation of the module most likely uses Blue Pill development board (STM32F103). Normally charge pump is controlled via BOSCH control module (relays are on NC mode) but when decelaration demand from OP is detected in CAN msg 0x343 (uint16_t ACC_CMD), it'll disconnects the module from the pump and start controlling the pump with ~2 kHz PWM signal of the power MOSFET (relays state are switched OFF from NC mode). Also brake light swithes HIGH (S_BLTS) and LOW (S_BLS) signal lines are driven so that the car detects brake pedal pressed event. When ACC_CMD demand is no longer detected, first 12V line and grond (PWR MOSFET) will be disconnected from the pump and after 600 ms DSC control module is switch back inline with the pump. Also brakelight switch is turned OFF. This delay is because if the transition from pump activated with BrakeModule back to DSC module is too fast, DSC vill give error code. I think this is caused of pump still rotating (generating voltage to pump wires) and you will connect the pump to DSC module, modules feedback lines detects voltage at the pump when it shouldn't an gives an error.
+
+DS18B20 measures power MOSFET temperature every 10 seconds and small fan will turn on if over 45 degrees is detected. Also if temperature exceeds 80 degrees, brake module will disable OPENPILOT and wont engage until temperature is below that.
+
+Speed value is read on message 0x153 and send to OPENPILOT as ACC set speed when OP is engaged (uint8_t set_speed). Brake pedal state is read on message 0x329 (bool BRK_ST) and sent to OP when there is no braking demand and pedal press is detected to disengage OP (bool BRK_ST_OP). Also BMW cruise control steering wheel button presses (uint8_t BTN_ST) are detected on same message. Cruise state (bool CC_ST) is detected on 0x545 and if it is on OP wont engage to prevent original CC and OP to control longnitudinal simultatoneusly.
+
+Filtering of CAN messages are used to give better change to not to lose wanted messages. After filtering measured capture rate of CAN messages was 99.92 % in 1 minute test with Arduino Nano, with LGT8F328P little bit better.
+
+If DEBUG is #defined you can control the board via serial (look at the readSerial() function) + some debugging messages are shown.
 
 BrakeModule is used to emulate TOYOTA corollas cruise controller because this is the car which is used on my OPENPILOT fork. This implementation is shown as sent data sent in 0x1D2 and 0x1D3 CAN messages which are originally used by TOYOTA cruise controller. The use of TOYOTA in OP is from legacy reasons because the first guy that used OP on older cars implement it on TOYOTA Celica and my code is just revision of that.
 
 For discussion of "old" cars impelementation of OPENPILOT join discord: discord server link here.
-
-Speed value is read on message 0x153 and send to OPENPILOT as ACC set speed when OP is engaged (set_speed). Brake pedal state is read on message 0x329 (BRK_ST) and sent to OP when OP is not braking and pedal press is detected to disengage OP (BRK_ST_OP). Also BMW cruise control steering wheel button presses (BTN_ST) are detected on same message. Cruise state (CC_ST_OP) is detected on 0x545 and if it is on OP wont engage to prevent original CC and OP to control longnitidinal simultatoneusly.
-
-Filtering of CAN messages are used to give better change to not to lose wanted messages.
-
-If DEBUG is #defined you can control the board via serial (look at the readSerial() function).
 
 Note to self:
 - Add DBC file that contains only E39 and TOYOTA corolla msgs.
@@ -155,6 +157,8 @@ The main worry point that I have is that if an stability control event should ha
 If you damage the ABS control unit it is quite hard to repair and if bought new also quite pricey. I give no promises that using the BrakeModule won't brake anything. I think even that it is somewhat likely that it could happen at least with this HARDWARE/SOFTWARE. Knock on wood, I haven't broke my unit even though it has had quite a bit of rough love.
 
 I don't know what is the max capability of the charge pump eg. if you run it too long can it overheat or something. The software does not restrict this at all.
+
+If brake pedal is pressed hard and BrakeModule is controlling the pump and switched back to "normal mode", DSC will give an error.
 
 Good design would prolly be to install the module on a professional case so components wouldn't be exposed with integrated heat dispersion.
 
