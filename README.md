@@ -25,7 +25,7 @@ I'm not sure if these are compatible cars, eg. is BOSCH 5.7 system == charge pum
 
 The SOFTWARE has been designed to read braking demand values from CAN bus that are sent from OPENPILOT. OPENPILOT (OP) is opensource semiautonomous system (software) that can possibly be retrofitted to your car to have LEVEL 2 autonomous system. The OPENPILOT needs to be able to control longnitudinal (acceleration and deceleratio) and lateral (steering) via CAN bus. https://github.com/commaai/openpilot
 
-Video of introducing OPENPILOT.
+Video introducing OPENPILOT.
 
 [![](https://img.youtube.com/vi/NmBfgOanCyk/0.jpg)](https://youtu.be/NmBfgOanCyk)
 
