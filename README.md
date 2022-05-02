@@ -74,7 +74,7 @@ In E39 The DME control unit evaluates the signals for the purpose of registering
   <img src="Pics/BLS_logik.PNG?raw=true">
 </p>
 
-ABS module/DSC hydraylic unit shown in M54 engine bay.
+ABS module/DSC hydraulic unit shown in M54 engine bay.
 <p align="left">
   <img src="Pics/ABSunit.PNG?raw=true">
 </p>
