@@ -34,16 +34,16 @@ This module could be used with other adaptive cruise control systems (ACC) with 
 ---
 
 ## Working principle
-Superabstaract of BOSCH 5.7/DSCIII system. In my mind the system can be roughly derived into few subsystems: ABS module which is the control unit (ECU), valves that control the brakefluid flow, ABS relief pump, charge pump (also known as pre-charge pump) and sensors that monitor the system and the trajectory of the car.
-In ABS/DSC situation ABS module can reduce motors torque via CAN messages, relief brake pressure on individual brakes with valves and ABS relief pump or apply pressure to certain brakes by controlling the valves and running the charge pump.
+Superabstaract of BOSCH 5.7/DSCIII system. In my mind the system can be roughly derived into few subsystems: control module (ECU) that is responsible all of the electrical stuff, valves that control the brakefluid flow, ABS relief pump, charge pump (also known as pre-charge pump) and sensors that monitor the system and the trajectory of the car. In ABS/DSC situation control module can reduce motors torque via CAN messages, relief brake pressure on individual brakes with valves and ABS relief pump or apply pressure to certain brakes by controlling the valves and running the charge pump.
 
 Picture of BOSCH system with DSCIII.
 <p align="left">
   <img src="Pics/DSCIII.PNG?raw=true">
 </p>
 
-As the charge pump can increase the brake pressure, if one can control it can control also cars deceleration (braking). The charge pump is controlled normally by 2 N-channel MOSFETs inside ABS module in halfbrige configuration.
+As the charge pump can increase the pressure in the brake circuit (10-15 bar), if one can control it, can also control cars deceleration (braking). The charge pump is controlled normally by 2 N-channel MOSFETs inside the control module in halfbrige configuration.
 
+Pic of 2 FETs inside the module, right one is damaged. These are not the regular type black thingies that you normally see as MOSFETs.
 <p align="left">
   <img src="Pics/PumpFETs.PNG?raw=true">
 </p>
@@ -55,7 +55,7 @@ Handwritten schematic of the driving circuit of the charge pump.
 
 If someone want's to deep dive closer on Bosch DSC 5.7 ABS Module Diagnosis and Repair read this great post: https://www.bimmerfest.com/threads/bosch-dsc-5-7-abs-module-diagnosis-and-repair.822139/#post-8854110 (the pics are stolen from it).
 
-Main thesis of working principle of the BrakeModule is 1. to disconnect the ABS unit from the charge pump and connect the charge pump wires from ABS module with resistor so that the ABS module "thinks" that the pump is connected (if wires are disconnected ABS module throws an charge pump error). 2. Connect 12V to the pump and use N-channel power MOSFET to adjust to charge pump yield (brake pressure). 3. One has to manipulate also the cars brake light (pedal) switch because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. Brake light switch has 4 wires: 12V, ground, signal LOW, signal 2 HIGH. Signal LOW is grounded and signal HIGH is floating when pedal not pressed. When pedal is pressed, signal LOW is floating and signal HIGH is connected to 12V.
+Main thesis of how the BrakeModule works is 1. to disconnect the BOSCH control module from the charge pump and connect the charge pump wires from module with resistor so that the control module "thinks" that the pump is connected. If wires are disconnected, module throws an charge pump error, because it will detect open circuit with the feedback lines shown in handwritten schematic. 2. Connect 12V to the pump and use N-channel power MOSFET to adjust to charge pump yield (brake pressure). 3. One has to manipulate also the cars brake light (pedal) switch because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. Brake light switch has 4 wires: 12V, ground, signal LOW, signal 2 HIGH. Signal LOW is grounded and signal HIGH is floating when pedal not pressed. When pedal is pressed, signal LOW is floating and signal HIGH is connected to 12V.
 
 Main principle of driving charge pump and brakelight switch with BrakeModule.
 <p align="center">
