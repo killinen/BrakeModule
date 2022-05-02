@@ -108,7 +108,7 @@ The PCB layout is much improved on the next generation and should not give too m
 
 ---
 
-## Next generation
+## Next generation (in development)
 
 The next generation of the board is planned to have an Blue Pill development board accompanied with MCP2551 CAN module. 
 - Integrate the relays (and use better ones) into the PCB. 
