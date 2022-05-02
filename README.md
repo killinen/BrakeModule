@@ -55,12 +55,23 @@ Handwritten schematic of the driving circuit of the charge pump.
 
 If someone want's to deep dive closer on Bosch DSC 5.7 ABS Module Diagnosis and Repair read this great post: https://www.bimmerfest.com/threads/bosch-dsc-5-7-abs-module-diagnosis-and-repair.822139/#post-8854110 (the pics are stolen from it).
 
-Main thesis of how the BrakeModule works is 1. to disconnect the BOSCH control module from the charge pump and connect the charge pump wires from module with resistor so that the control module "thinks" that the pump is connected. If wires are disconnected, module throws an charge pump error, because it will detect open circuit with the feedback lines shown in handwritten schematic. 2. Connect 12V to the pump and use N-channel power MOSFET to adjust to charge pump yield (brake pressure). 3. One has to manipulate also the cars brake light (pedal) switch because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. Brake light switch has 4 wires: 12V, ground, signal LOW, signal 2 HIGH. Signal LOW is grounded and signal HIGH is floating when pedal not pressed. When pedal is pressed, signal LOW is floating and signal HIGH is connected to 12V.
+Main thesis of how the BrakeModule works is 1. to disconnect the BOSCH control module from the charge pump and connect the charge pump wires from module with resistor so that the control module "thinks" that the pump is connected. If wires are disconnected, module throws an charge pump error, because it will detect open circuit with the feedback lines shown in handwritten schematic. 2. Connect 12V to the pump and use N-channel power MOSFET to adjust to charge pump yield (brake pressure). 3. One has to manipulate also the cars brake light (pedal) switch because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. 
 
 Main principle of driving charge pump and brakelight switch with BrakeModule.
 <p align="center">
   <img src="Pics/BMmain.PNG?raw=true">
 </p>
+
+Brake light switch has 4 wires: 12V, ground, signal LOW, signal 2 HIGH. Signal LOW is grounded and signal HIGH is floating when pedal not pressed. When pedal is pressed, signal LOW is floating and signal HIGH is connected to 12V. Those lines are in BMW lingo S_BLS (brake-light switch) S_BLTS (brake-light test switch). 
+<p align="center">
+  <img src="Pics/Brake light switch.JPG?raw=true">
+</p>
+
+In E39 The DME control unit evaluates the signals for the purpose of registering brake operation. The brake-light switch connects to earth (B-), the brake-light test switch connects to B+. And uses this truth table for opration:
+<p align="center">
+  <img src="Pics/BLS_logik.PNG?raw=true">
+</p>
+
 
 Further knowledge on how BOSCH 5.7/DSCIII works, look at dsc_system.pdf on the repo.
 
@@ -136,13 +147,21 @@ Note to self:
 
 ---
 
-### Considerations
+### Problems that I know of
 What I have understand there are standards for automotive hardware and software design and this does project does not follow any of those.
 
 The main worry point that I have is that if an stability control event should happen on the same time that BrakeModule is controlling the charge pump there is quite high change that the stability control system wont funtion as planned. This is an issue that I want to address after getting the next generation hardware done.
 
-If you damage the ABS control unit it is quite hard to repair and if bought new also quite pricey. I have no promises that using the BrakeModule won't anything, I think even that it is somewhat likely that it could happen at least with this HARDWARE/SOFTWARE. Knock on wood, I haven't braken my unit even though it has had quite a rough love.
+If you damage the ABS control unit it is quite hard to repair and if bought new also quite pricey. I give no promises that using the BrakeModule won't brake anything. I think even that it is somewhat likely that it could happen at least with this HARDWARE/SOFTWARE. Knock on wood, I haven't broke my unit even though it has had quite a bit of rough love.
+
+I don't know what is the max capability of the charge pump eg. if you run it too long can it overheat or something. The software does not restrict this at all.
 
 Good design would prolly be to install the module on a professional case so components wouldn't be exposed with integrated heat dispersion.
+
+---
+
+### Someone might think
+
+That wouldn't it be best if you could control the DSCIII control module via CAN to use the charge pump. Yes it prolly would, but I don't have knowledge how to do it. I think this could be feaseble because this same unit is used with ACC systems and the only way I can think of is to apply the brakes is to use the charge pump.
 
 ---
