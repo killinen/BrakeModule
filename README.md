@@ -34,13 +34,28 @@ This module could be used with other adaptive cruise control systems (ACC) with 
 ---
 
 ## Working principle
-
-Working principle of the module is 1. to intercept the ABS unit from the charge pump (note: not the ABS pump!) and connect the charge pump wire from ABS module with resistor so that the ABS "thinks" that the pump is connected (if wires are disconnected ABS module throws an charge pump error). 2. Connect 12V to the pump and use N-channel power MOSFET to adjust to charge pump yield (brake pressure). 3. One has to manipulate also the cars brake light (pedal) switch because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. Brake light switch has 4 wires: 12V, ground, signal LOW, signal 2 HIGH. Signal LOW is grounded and signal HIGH is floating when pedal not pressed. When pedal is pressed, signal LOW is floating and signal HIGH is connected to 12V.
+Superabstaract of BOSCH 5.7/DSCIII system. In my mind the system can be roughly derived into few subsystems: ABS module which is the control unit (ECU), valves that control the brakefluid flow, ABS relief pump, charge pump (also known as pre-charge pump) and sensors that monitor the system and the trajectory of the car.
+In ABS/DSC situation ABS module can reduce motors torque via CAN messages, relief brake pressure on individual brakes with valves and ABS relief pump or apply pressure to certain brakes by controlling the valves and running the charge pump.
 
 Picture of BOSCH system with DSCIII.
 <p align="left">
   <img src="Pics/DSCIII.PNG?raw=true">
 </p>
+
+As the charge pump can increase the brake pressure, if one can control it can control also cars deceleration (braking). The charge pump is controlled normally by 2 N-channel MOSFETs inside ABS module in halfbrige configuration.
+
+<p align="left">
+  <img src="Pics/PumpFETs.PNG?raw=true">
+</p>
+
+Handwritten schematic of the driving circuit of the charge pump.
+<p align="left">
+  <img src="Pics/PumpSch.PNG?raw=true">
+</p>
+
+If someone want's to deep dive closer on Bosch DSC 5.7 ABS Module Diagnosis and Repair read this great post: https://www.bimmerfest.com/threads/bosch-dsc-5-7-abs-module-diagnosis-and-repair.822139/#post-8854110 (the pics are stolen from it).
+
+Main thesis of working principle of the BrakeModule is 1. to disconnect the ABS unit from the charge pump and connect the charge pump wires from ABS module with resistor so that the ABS module "thinks" that the pump is connected (if wires are disconnected ABS module throws an charge pump error). 2. Connect 12V to the pump and use N-channel power MOSFET to adjust to charge pump yield (brake pressure). 3. One has to manipulate also the cars brake light (pedal) switch because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. Brake light switch has 4 wires: 12V, ground, signal LOW, signal 2 HIGH. Signal LOW is grounded and signal HIGH is floating when pedal not pressed. When pedal is pressed, signal LOW is floating and signal HIGH is connected to 12V.
 
 Further knowledge on how BOSCH 5.7/DSCIII works, look at dsc_system.pdf on the repo.
 
@@ -48,13 +63,14 @@ Further knowledge on how BOSCH 5.7/DSCIII works, look at dsc_system.pdf on the r
   <img src="Pics/ABSunit.PNG?raw=true">
 </p>
 
-ABS module shown in M54 engine bay.
+ABS module/DSC hydraylic unit shown in M54 engine bay.
 
 <p align="left">
   <img src="Pics/Pump.PNG?raw=true">
 </p>
 
-Charge pump shown in M62
+Charge pump shown in M62TU engine bay.
+
 
 ---
 
@@ -110,7 +126,7 @@ BrakeModule is used to emulate TOYOTA corollas cruise controller because this is
 
 For discussion of "old" cars impelementation of OPENPILOT join discord: discord server link here.
 
-Speed value is read on message 0x153 and send to OPENPILOT as ACC set speed when OP is engaged (set_speed). Brake pedal state is read on message 0x329 (BRK_ST) and sent to OP when OP is not braking and pedal press is detected to disengage OP (BRK_ST_OP). Also BMW cruise control steering wheel button presses (BTN_ST) are detected on same message. Cruise state (CC_ST) is detected on 0x545 and if it is on OP wont engage to prevent original CC and OP to control longnitidinal simultatoneusly.
+Speed value is read on message 0x153 and send to OPENPILOT as ACC set speed when OP is engaged (set_speed). Brake pedal state is read on message 0x329 (BRK_ST) and sent to OP when OP is not braking and pedal press is detected to disengage OP (BRK_ST_OP). Also BMW cruise control steering wheel button presses (BTN_ST) are detected on same message. Cruise state (CC_ST_OP) is detected on 0x545 and if it is on OP wont engage to prevent original CC and OP to control longnitidinal simultatoneusly.
 
 Filtering of CAN messages are used to give better change to not to lose wanted messages.
 
@@ -123,10 +139,12 @@ Note to self:
 
 ---
 
-### Danger points
+### Considerations
 What I have understand there are standards for automotive hardware and software design and this does project does not follow any of those.
 
 The main worry point that I have is that if an stability control event should happen on the same time that BrakeModule is controlling the charge pump there is quite high change that the stability control system wont funtion as planned. This is an issue that I want to address after getting the next generation hardware done.
+
+If you damage the ABS control unit it is quite hard to repair and if bought new also quite pricey. I have no promises that using the BrakeModule won't anything, I think even that it is somewhat likely that it could happen at least with this HARDWARE/SOFTWARE. Knock on wood, I haven't braken my unit even though it has had quite a rough love.
 
 Good design would prolly be to install the module on a professional case so components wouldn't be exposed with integrated heat dispersion.
 
