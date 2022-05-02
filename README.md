@@ -147,6 +147,8 @@ If DEBUG is #defined you can control the board via serial (look at the readSeria
 
 BrakeModule is used to emulate TOYOTA corollas cruise controller because this is the car which is used on my OPENPILOT fork. This implementation is shown as sent data sent in 0x1D2 and 0x1D3 CAN messages which are originally used by TOYOTA cruise controller. The use of TOYOTA in OP is from legacy reasons because the first guy that used OP on older cars implement it on TOYOTA Celica and my code is just revision of that.
 
+The software ofcourse needs some rewrite when migrating to STM32 family of microcontrollers in next hardware generation.
+
 For discussion of "old" cars impelementation of OPENPILOT join discord: discord server link here.
 
 Note to self:
