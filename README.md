@@ -112,16 +112,24 @@ The PCB layout is much improved on the next generation and should not give too m
 The next generation of the board is planned to have an Blue Pill development board accompanied with MCP2551 CAN module. 
 - Integrate the relays (and use better ones) into the PCB. 
 - Integrate the brakeswitch lines into the PCB, get the low current demand of the board from brake light switch lines.
+- Add 12V to 5V buck converter module.
 - "Read" the brake pedal switch true state. 
-- Change the temperature sensor from DS18B20 to LM36. 
+- Change the temperature sensor from DS18B20 to TMP36. 
 - Integrate pump wire connections into PCB.
 - Have USB to UART (FTDI) connector for updating the software and debugging.
-- Maybe use of different kind of pwr MOSFET
-- Add 12V to 5V buck converter module
+- Maybe use of different kind of pwr MOSFET.
 
 <p align="center">
   <img src="Pics/BM03.PNG?raw=true">
 </p>
+
+## Possible future development
+
+Possibly ditch the relays and just sense the DSC wires and drive the pump accordingly. This would result an lag for the charge pump pressure buildup in DSC operation, because it seems that there is some bootstrapping cycle shown in measuring the DSC wires:
+
+Picture here of voltage readings measured from +wire.
+
+So to trigger the charge pump to operation it would need so lag so it is not triggered by the bootstarp cycle voltage spikes. This possibly would be around XXX ms, which I'm not sure if it is real world meaningful lag. This is kinda problem allready if we would want to eliminate the unfortunate event of DSC demanding charge pump operation and BrakeModule beeing in control. 
 
 ---
 
