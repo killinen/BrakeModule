@@ -44,6 +44,18 @@ Picture of BOSCH system with DSCIII.
 
 Further knowledge on how BOSCH 5.7/DSCIII works, look at dsc_system.pdf on the repo.
 
+<p align="left">
+  <img src="Pics/ABSunit.PNG?raw=true">
+</p>
+
+ABS module shown in M54 engine bay.
+
+<p align="left">
+  <img src="Pics/Pump.PNG?raw=true">
+</p>
+
+Charge pump shown in M62
+
 ---
 
 ## BrakeModule HARDWARE
