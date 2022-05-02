@@ -57,20 +57,22 @@ If someone want's to deep dive closer on Bosch DSC 5.7 ABS Module Diagnosis and 
 
 Main thesis of working principle of the BrakeModule is 1. to disconnect the ABS unit from the charge pump and connect the charge pump wires from ABS module with resistor so that the ABS module "thinks" that the pump is connected (if wires are disconnected ABS module throws an charge pump error). 2. Connect 12V to the pump and use N-channel power MOSFET to adjust to charge pump yield (brake pressure). 3. One has to manipulate also the cars brake light (pedal) switch because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. Brake light switch has 4 wires: 12V, ground, signal LOW, signal 2 HIGH. Signal LOW is grounded and signal HIGH is floating when pedal not pressed. When pedal is pressed, signal LOW is floating and signal HIGH is connected to 12V.
 
+Main principle of driving charge pump and brakelight switch with BrakeModule.
+<p align="center">
+  <img src="Pics/BMmain.PNG?raw=true">
+</p>
+
 Further knowledge on how BOSCH 5.7/DSCIII works, look at dsc_system.pdf on the repo.
 
+ABS module/DSC hydraylic unit shown in M54 engine bay.
 <p align="left">
   <img src="Pics/ABSunit.PNG?raw=true">
 </p>
 
-ABS module/DSC hydraylic unit shown in M54 engine bay.
-
+Charge pump shown in M62TU engine bay.
 <p align="left">
   <img src="Pics/Pump.PNG?raw=true">
 </p>
-
-Charge pump shown in M62TU engine bay.
-
 
 ---
 
@@ -79,11 +81,6 @@ Charge pump shown in M62TU engine bay.
 Brakemodule main functionalities are 3 relays for switching charge pump inline with ABS system or BrakeModule. 1 power MOSFET to control the charge pump. Temperature measurement to read the power MOSFET temperature. FAN + mosfet to cool down the power MOSFET. CAN module is used for communication. Voltage divider is used to measure ABS line voltage.
 
 In this development stage the main components of the hardware is LGT8F328P LQFP32 MiniEVB (can work w Nano also), MCP2515 CAN module, 4 relay module, Infineon IRF40R207 N-chan power MOSFET, TC1413N gate driver IC, 2 2N7000 N-chan MOSFET, 2N3904 NPN transistor, BS250 P-chan MOSFET, DS18B20 temperature sensor.
-
-Main principle of driving charge pump and brakelight switch with BrakeModule.
-<p align="center">
-  <img src="Pics/BMmain.PNG?raw=true">
-</p>
 
 Picture of PCB of BrakeModule v0.2.
 <p align="center">
