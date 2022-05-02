@@ -23,9 +23,9 @@ Some list of of cars that use BOSCH 5.7 system found on the internet.
 
 I'm not sure if these are compatible cars, eg. is BOSCH 5.7 system == charge pump system eg. DSCIII (or similar), that needs to be in place to brake the car?
 
-The SOFTWARE has been designed to read braking demand values from CAN bus that are sent from OPENPILOT. OPENPILOT (OP) is opensource semiautonomous system (software) that can possibly be retrofitted to your car to have LEVEL 2 autonomous system. The OPENPILOT needs to be able to control longnitudinal (acceleration and deceleratio) and lateral (steering) via CAN bus. 
+The SOFTWARE has been designed to read braking demand values from CAN bus that are sent from OPENPILOT. OPENPILOT (OP) is opensource semiautonomous system (software) that can possibly be retrofitted to your car to have LEVEL 2 autonomous system. The OPENPILOT needs to be able to control longnitudinal (acceleration and deceleratio) and lateral (steering) via CAN bus. https://github.com/commaai/openpilot
 
-Video of OPENPILOT.
+Video of introducing OPENPILOT.
 
 [![](https://img.youtube.com/vi/NmBfgOanCyk/0.jpg)](https://youtu.be/NmBfgOanCyk)
 
