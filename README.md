@@ -117,7 +117,7 @@ The next generation of the board is planned to have an Blue Pill development boa
 - Change the temperature sensor from DS18B20 to TMP36. 
 - Integrate pump wire connections into PCB.
 - Have USB to UART (FTDI) connector for updating the software and debugging.
-- Maybe use of different kind of pwr MOSFET.
+- Maybe use of different kind of power MOSFET.
 
 <p align="center">
   <img src="Pics/BM03.PNG?raw=true">
