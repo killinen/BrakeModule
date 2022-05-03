@@ -131,6 +131,10 @@ Picture here of voltage readings measured from +wire.
 
 So to trigger the charge pump to operation it would need so lag so it is not triggered by the bootstarp cycle voltage spikes. This possibly would be around XXX ms, which I'm not sure if it is real world meaningful lag. This is kinda problem allready if we would want to eliminate the unfortunate event of DSC demanding charge pump operation and BrakeModule beeing in control. 
 
+<p align="center">
+  <img src="Pics/DSC_VOLT.PNG?raw=true">
+</p>
+
 ---
 
 ## SOFTWARE
