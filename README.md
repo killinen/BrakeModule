@@ -88,7 +88,7 @@ Charge pump shown in M62TU engine bay.
 
 ## BrakeModule HARDWARE
 
-Brakemodule main functionalities are 3 relays for switching charge pump inline with ABS system or BrakeModule. 1 power MOSFET to control the charge pump. Temperature measurement to read the power MOSFET temperature. FAN + mosfet to cool down the power MOSFET. CAN module is used for communication. Voltage divider is used to measure ABS line voltage.
+Brakemodule main functionalities are 3 relays for switching charge pump inline with DSC system or BrakeModule. 1 power MOSFET to control the charge pump. Temperature measurement to read the power MOSFET temperature. FAN + mosfet to cool down the power MOSFET. CAN module is used for communication. Voltage divider is used to measure ABS line voltage.
 
 In this development stage the main components of the hardware is LGT8F328P LQFP32 MiniEVB (can work w Nano also), MCP2515 CAN module, 4 relay module, Infineon IRF40R207 N-chan power MOSFET, TC1413N gate driver IC, 2 2N7000 N-chan MOSFET, 2N3904 NPN transistor, BS250 P-chan MOSFET, DS18B20 temperature sensor.
 
