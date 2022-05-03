@@ -61,7 +61,7 @@ Main thesis of how the BrakeModule works is 1. to disconnect the BOSCH control m
 
 Main principle of driving charge pump and brakelight switch with BrakeModule.
 <p align="center">
-  <img src="Pics/BMmain.png?raw=true">
+  <img src="Pics/BMMain.png?raw=true">
 </p>
 
 Brake light switch has 4 wires: 12V, ground, signal LOW, signal 2 HIGH. Signal LOW is grounded and signal HIGH is floating when pedal not pressed. When pedal is pressed, signal LOW is floating and signal HIGH is connected to 12V. Those lines are in BMW lingo S_BLS (brake-light switch) S_BLTS (brake-light test switch). 
