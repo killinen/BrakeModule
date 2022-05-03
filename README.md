@@ -135,6 +135,8 @@ So to trigger the charge pump to operation it would need so lag so it is not tri
   <img src="Pics/DSC_VOLT.png?raw=true">
 </p>
 
+In HW v0.2 I have used (tested) relay or N-channel MOSFET for controlling the LOW side BLS signal line (S_BLS). I somehow prefer the use of NC-relay, but maybe tranfer to some other type of solution in the future. Dual channel MOSFET IC maybe or something. The impelementation of both solution can be seen in SW as #define values B_MOSFET or B_RELAY.
+
 ---
 
 ## SOFTWARE
