@@ -125,7 +125,7 @@ The next generation of the board is planned to have an Blue Pill development boa
 
 ## Possible future development
 
-Possibly ditch the pump side relays and make same kinda MOSFET configuration that in the DSC module. Then sense the DSC wires and drive the pump accordingly. Below is picture that shows voltage in millivolts (DSC_VOLTAGE) measured from DSC+ wire. There seems to be somekinda bootstrapping cycle and somehow voltage is increased when the pump is running driven by the BrakeModule. The pump running can be observed from the PWM value (2047 = 100% dutycycle). Brakepressure (bar) is shown only reference. The pressure reading wo pump been driven is me pressing the brake pedal :)
+Possibly ditch the pump side relays and make same kinda MOSFET configuration that in the DSC module. Then sense the DSC wires and drive the pump accordingly. Below is picture that shows voltage in millivolts (DSC_VOLTAGE) measured from DSC+ wire. There seems to be somekinda bootstrapping cycle and somehow voltage is increased when the pump is running driven by the BrakeModule. The pump running can be observed from the PWM value (2047 = 100% dutycycle). Brakepressure (bar) is shown for reference. The pressure reading wo pump been driven is me pressing the brake pedal :)
 
 <p align="center">
   <img src="Pics/DSC_VOLT.png?raw=true">
