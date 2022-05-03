@@ -34,7 +34,7 @@ This module could be used with other adaptive cruise control systems (ACC) with 
 ---
 
 ## Working principle
-Superabstaract of BOSCH 5.7/DSCIII system. In my mind the system can be roughly derived into few subsystems: control module (ECU) that is responsible all of the electrical stuff, valves that control the brakefluid flow, ABS relief pump, charge pump (also known as pre-charge pump) and sensors that monitor the system and the trajectory of the car. In ABS/DSC situation control module can reduce motors torque via CAN messages, relief brake pressure on individual brakes with valves and ABS relief pump or apply pressure to certain brakes by controlling the valves and running the charge pump.
+Superabstaract of BOSCH 5.7/DSCIII system. In my mind the system can be roughly derived into few subsystems: control module (ECU) that is responsible all of the electrical stuff, valves that control the brakefluid flow, ABS relief pump, charge pump (also known as pre-charge pump) and sensors that monitor the system and the trajectory of the car. In ABS/DSC situation control module can reduce cars motor torque via CAN messages, relief brake pressure on individual brakes with valves and ABS relief pump or apply pressure to certain brakes by controlling the valves and running the charge pump.
 
 Picture of BOSCH system with DSCIII.
 <p align="left">
