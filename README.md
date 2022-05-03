@@ -125,15 +125,13 @@ The next generation of the board is planned to have an Blue Pill development boa
 
 ## Possible future development
 
-Possibly ditch the relays and just sense the DSC wires and drive the pump accordingly. This would result an lag for the charge pump pressure buildup in DSC operation, because it seems that there is some bootstrapping cycle shown in measuring the DSC wires:
-
-Picture here of voltage readings measured from +wire.
-
-So to trigger the charge pump to operation it would need so lag so it is not triggered by the bootstarp cycle voltage spikes. This possibly would be around XXX ms, which I'm not sure if it is real world meaningful lag. This is kinda problem allready if we would want to eliminate the unfortunate event of DSC demanding charge pump operation and BrakeModule beeing in control. 
+Possibly ditch the pump side relays and make same kinda MOSFET configuration that in the DSC module. Then sense the DSC wires and drive the pump accordingly. Below is picture that shows voltage in millivolts (DSC_VOLTAGE) measured from DSC+ wire. There seems to be somekinda bootstrapping cycle and somehow voltage is increased when the pump is running driven by the BrakeModule. The pump running can be observed from the PWM value (2047 = 100% dutycycle). Brakepressure (bar) is shown only reference. The pressure reading wo pump been driven is me pressing the brake pedal :)
 
 <p align="center">
   <img src="Pics/DSC_VOLT.png?raw=true">
 </p>
+
+The unfortunate thing in these voltage spikes are IMO that if you would like to eliminate the change of charge pump not running when DSC module is demanding it but BrakeModule controlling the pump it will result of somewhat of an lag if you are waiting to see that is this voltage spike and bootstrapping cycle or an real pump control demand. Will this result an real world meningful lag, I dunno.
 
 In HW v0.2 I have used (tested) relay or N-channel MOSFET for controlling the LOW side BLS signal line (S_BLS). I somehow prefer the use of NC-relay, but maybe tranfer to some other type of solution in the future. Dual channel MOSFET IC maybe or something. The impelementation of both solution can be seen in SW as #define values B_MOSFET or B_RELAY.
 
