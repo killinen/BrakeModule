@@ -85,7 +85,7 @@ int16_t  BRK_CMD = 0;                     // Deceleration value (wanted braking)
 uint16_t errcounter = 0;                  // Errorcounter for disabling OP if non 0x343 is received at 65000 cycletimes
 uint16_t CNL_REQ_CNT = 0;                 // Counter for detecting BrakeModule cancel request (disable module)
 uint16_t BRK_ST_CNT = 0;                  // Counter for delaying BRK_ST_OP happening so that OP wont disengage unnessaccarely
-uint16_t DSC_volt = 0;                    // Voltage from DSC+ line     Analog read value that modified by used voltage divider values
+uint16_t DSC_volt = 0;                    // Value of voltage from DSC+ line in milliVolts
 uint16_t car_speed = 0;                   // Value of the readed car speed
 
 uint8_t set_speed = 0;                    // Speed value sent to OP to be the set speed of the cruise control
@@ -208,7 +208,7 @@ void loop() {
 
   // the ADC clears the bit when done
   if (bit_is_clear(ADCSRA, ADSC)) {
-    DSC_volt = (ADC * 3.6);                               // Read ADC value and multiply by 3.6, this comes from approxmimation of 12 bit ADC and 10k/4k7 voltage divider
+    DSC_volt = (ADC * 3.6);                               // Read ADC value and multiply by 3.6, this comes from approximation of 12 bit ADC and 10k/4k7 voltage divider
     ADC_FLG = false;                                      // Conversion is done so set ADC flag to false 
   }
 
@@ -216,7 +216,7 @@ void loop() {
 // ************************************* READ CAN STUFF ******************************************
 
   if (mcp2515.readMessage(&canMsg) == MCP2515::ERROR_OK) {
-    if (canMsg.can_id == 0x153) {
+    if (canMsg.can_id == 0x153) {                         // Read speed from 0x153 and do some conversion
       car_speed = (((canMsg.data[2] << 3) + (canMsg.data[1] >> 5)) * 0.25) - 2.64;
     }
     if (canMsg.can_id == 0x329) {
@@ -240,9 +240,9 @@ void loop() {
 
 // ******************************** OP LOGIK STUFF **********************************************
 
-  if (BTN_CMD == RSM && BTN_PRS_FLG == false) {                         // Engage/disengage OP if resume button press is detected, BTN_PRS_FLG prevents multiple button presses
+  if (BTN_CMD == RSM && BTN_PRS_FLG == false) {                // Engage/disengage OP if resume button press is detected, BTN_PRS_FLG prevents multiple button presses
     if (CC_ST_OP == false) {
-      set_speed = car_speed;                                            // When OP CC activation is set, save car_speed to set_speed
+      set_speed = car_speed;                                   // When OP CC activation is set, save car_speed to set_speed
       CNL_REQ_CNT = 0;
       #ifdef DEBUG
       Serial.println("Speed setted");
@@ -261,7 +261,7 @@ void loop() {
   }
 
   if (BTN_CMD == RSM) {                                         // If resume cruise button press is detected, set RSM_PRS_FLG to avoid multiple button press detections
-    BTN_PRS_FLG = true;                                         // This should avoid making multiple button presses at one long button press if (BTN_PRS_FLG == false) is used, does it work?
+    BTN_PRS_FLG = true;                                         // This should avoid making multiple button presses at one long button press if (BTN_PRS_FLG == false) is used
   }
   else {
     BTN_PRS_FLG = false;
@@ -279,7 +279,7 @@ void loop() {
   }
   else {
     BRK_ST_OP = 0;
-    BRK_ST_CNT = 0;                                             // Maybe if this is deleted, BRK_ST_OP is triggered faster BC counter is most probably > 5
+    //BRK_ST_CNT = 0;                                             // Maybe if this is deleted, BRK_ST_OP is triggered faster BC counter is most probably > 5
   }
  
   if (errcounter == 0) {                                        // If 0x343 msg is received, this is triggered BC errcounter is set to 0
@@ -296,15 +296,17 @@ void loop() {
 // ************************************** BRAKE LOGIK *******************************************
 
   // After braking event disconnect charge pump from main voltage before connecting it back to DSC-module
-  if (BRK_CMD > -30 && BRK_FLG == true && RLS_FLG == false) {  // This is when we wanna go back to normal (maybe add here: RLS_FLG = false), isolate pump from 12V (relay & MOSFET) and start releasetimer
+  if (BRK_CMD > -30 && BRK_FLG == true && RLS_FLG == false) {  // This is when we wanna go back to normal, isolate pump from 12V (relay & MOSFET) and start releasetimer
     PORTC = BP_LOW;                       // 12V to PUMP relay LOW == disconnect
-    OCR1A = 0;                            // Set D9 PWM duty cycle to 0% (B- LOW)   COMMENT! MAYBE disable this, could to be better for the FLYBACKING voltage to get DOWN, do it @ releasetimer
+    //OCR1A = 0;                            // Set D9 PWM duty cycle to 0% (B- LOW)   COMMENT! MAYBE disable this, could to be better for the FLYBACKING voltage to get DOWN, do it @ releasetimer
+    OCR1A = 2047;
     timerRelease = currentMillis;         // Set timer for releasing the control back to DSC after settling time (if switch is done too fast car gives DSC error)
     RLS_FLG = true;                       // Set brakingReleaseFlag to true
   }
 
   // If upper function was excecuted and we went back to braking territory, set BRK_FLG and RLS_FLG false so we can start braking before timerRelease (lower func) is excecuted
   if (BRK_CMD < -50 && RLS_FLG == true) {
+    OCR1A = 0;
     BRK_FLG = false;
     RLS_FLG = false;
   }
@@ -345,7 +347,8 @@ void loop() {
     #endif
   }
 
-  if (BRK_FLG == true && RLS_FLG == false){   // This is done this way BC then upper func wont be excecuted in every loop, only this
+  //if (BRK_FLG == true && RLS_FLG == false){   // This is done this way BC then upper func wont be excecuted in every loop, only this
+  if (BRK_FLG == true && RLS_FLG == false && errcounter == 0){   // This is done this way BC so that the PWM wont be done at every cycle loop but every 10 ms (change of 0x343)
     OCR1A = multiMap(BRK_CMD, in, out, 11);
   }
 
