@@ -162,7 +162,7 @@ If #FAN is defined in software TMP36 measures power MOSFET temperature every 10 
 ---
 
 ## OT of CAN bus messages
-if someone want to see some CAN messages in E39 CAN bus https://github.com/killinen/opendbc/blob/master/BMW_E39.dbc (this is not perfect, would be cool if someone else would like to look into it). This is in OPENDBC format. If don't know what DBC is here's couple good reads https://github.com/stefanhoelzl/CANpy/blob/master/docs/DBC_Specification.md http://socialledge.com/sjsu/index.php/DBC_Format. Great insipiration for reverse engineering the CAN messages was this thread relating to E46 CAN bus messages: https://www.bimmerforums.com/forum/showthread.php?1887229-E46-Can-bus-project. Also for some other chassis CAN msgs see dzid's issue https://github.com/killinen/BrakeModule/issues/1.
+Some of the decoded CAN messages that is on E39 CAN bus can be found here: https://github.com/killinen/opendbc/blob/master/BMW_E39.dbc (I'm sure this is not perfect, would be cool if someone else would like to look into it). It is in OPENDBC format, here's couple good reads what DBC is. https://github.com/stefanhoelzl/CANpy/blob/master/docs/DBC_Specification.md http://socialledge.com/sjsu/index.php/DBC_Format. Great insipiration for reverse engineering the CAN messages was this thread relating to E46 CAN bus messages: https://www.bimmerforums.com/forum/showthread.php?1887229-E46-Can-bus-project. Also for some other chassis CAN msgs see dzid's issue https://github.com/killinen/BrakeModule/issues/1. Python library for en/decoding DCB's https://cantools.readthedocs.io/en/latest/.
 
 ---
 
