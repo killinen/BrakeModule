@@ -193,7 +193,7 @@ In older HW v0.2 I have used (tested) relay or N-channel MOSFET for controlling 
 ### Problems that I know of
 What I have understand there are standards for automotive hardware and software design and this does project does not follow any of those.
 
-The main worry point that I have is that if an stability control event should happen on the same time that BrakeModule is controlling the charge pump there is quite high change that the stability control system wont funtion as planned. This is an issue that I want to address after getting the next generation hardware done.
+The main worry point that I have is that if an stability control event should happen on the same time that BrakeModule is controlling the charge pump there is quite high change that the stability control system won't funtion as planned. This is an issue that I want to test in the future.
 
 If you damage the ABS control unit it is quite hard to repair and if bought new also quite pricey. I give no promises that using the BrakeModule won't brake anything. I think even that it is somewhat likely that it could happen at least with this HARDWARE/SOFTWARE. Knock on wood, I haven't broke my unit even though it has had quite a bit of rough love. Thanks to German engineer.
 
