@@ -141,33 +141,11 @@ Picture of BrakeModule inside 3D-printed case.
 
 ---
 
-## Next iteration
-
-If I have the insipiration to make of BM v0.3.3, there could be: 
-- Fixes for HW bugs (funny I found few). 
-- Reduce part count (simplify).
-- Maybe add (working) brake light switch low side sensing (redundancy).
-- Maybe 4 layer PCB desing (could lower the power tracing resistance?)
-- Maybe use of different kind of power MOSFET (is the footprint right).
-
-
-## Possible future development
-
-Possibly ditch the pump side relays and make same kinda MOSFET configuration that in the DSC module. Then sense the DSC wires and drive the pump accordingly. Below is picture that shows voltage in millivolts (DSC_VOLTAGE) measured from DSC+ wire. There seems to be somekinda bootstrapping cycle and somehow voltage is increased when the pump is running driven by the BrakeModule. The pump running can be observed from the PWM value (2047 = 100% dutycycle). Brakepressure (bar) is shown for reference. The pressure reading wo pump been driven is me pressing the brake pedal :)
-
-<p align="center">
-  <img src="Pics/DSC_VOLT.png?raw=true">
-</p>
-
-The unfortunate thing in these voltage spikes are IMO that if you would like to eliminate the change of charge pump not running when DSC module is demanding it but BrakeModule controlling the pump it will result of somewhat of an lag if you are waiting to see that is this voltage spike bootstrapping cycle or an real pump control demand. Will this result an real world meningful lag, I can't really say.
-
-In older HW v0.2 I have used (tested) relay or N-channel MOSFET for controlling the LOW side BLS signal line (S_BLS). I somehow prefer the use of NC-relay, but maybe tranfer to some other type of solution in the future. Dual channel MOSFET IC maybe or something.
-
----
-
 ## BrakeModule SW
 
-The software has been developed in arduino IDE to LGT8F328P board with Arduino Nano compability in mind. The next generation of the module most likely uses Blue Pill development board (STM32F103). Normally charge pump is controlled via BOSCH control module (relays are on NC mode) but when decelaration demand from OP is detected in CAN msg 0x343 (BRK_CMD), it'll disconnect the module from the pump and start controlling the pump with 15 kHz PWM signal of the power MOSFET (relays state are switched OFF from NC mode). Also brake light swithes HIGH (S_BLTS) and LOW (S_BLS) signal lines are driven so that the car detects brake pedal pressed event. When BRK_CMD demand is no longer detected, first 12V line and ground (PWR MOSFET) will be disconnected from the pump and after 600 ms DSC control module is switch back inline with the pump. Also brakelight switch is turned OFF. This delay is because if the transition from pump activated with BrakeModule back to DSC module is too fast, DSC modue will give error code. I think this is caused of pump still rotating (generating voltage to pump wires) and you will connect the pump to DSC module, modules feedback lines detects voltage at the pump when it shouldn't and gives an error.
+The software has been developed in arduino IDE to STM32F103 chip, some HAL functionalities has been added. The previous version of the board was based on LGT8F328P board with Arduino Nano compability in mind, so there might be some legacy thing from there. 
+
+Normally charge pump is controlled via BOSCH control module (relays are on NC mode) but when decelaration demand from OP is detected in CAN msg 0x343 (BRK_CMD), it'll disconnect the module from the pump and start controlling the pump with 15 kHz PWM signal of the power MOSFET (relays state are switched OFF from NC mode). Also brake light swithes HIGH (S_BLTS) and LOW (S_BLS) signal lines are driven so that the car detects brake pedal pressed event. When BRK_CMD demand is no longer detected, first 12V line and ground (PWR MOSFET) will be disconnected from the pump and after 600 ms DSC control module is switch back inline with the pump. Also brakelight switch is turned OFF. This delay is because if the transition from pump activated with BrakeModule back to DSC module is too fast, DSC modue will give error code. I think this is caused of pump still rotating (generating voltage to pump wires) and you will connect the pump to DSC module, modules feedback lines detects voltage at the pump when it shouldn't and gives an error.
 
 See below if it true ATM (not been implemented in this HW version).
 TMP36 measures power MOSFET temperature every 10 seconds and small fan will turn on if over 45 degrees is detected. Also if temperature exceeds 80 degrees, brake module will disable OPENPILOT and wont engage until temperature is below that (this might is not nessaccary at least haven't been for me).
@@ -186,6 +164,30 @@ BrakeModule is used to emulate TOYOTA corollas cruise controller because this is
 
 ## OT of CAN bus messages
 if someone want to see some CAN messages in E39 CAN bus https://github.com/killinen/opendbc/blob/master/BMW_E39.dbc (this is not perfect, would be cool if someone else would like to look into it). This is in OPENDBC format. If don't know what DBC is here's couple good reads https://github.com/stefanhoelzl/CANpy/blob/master/docs/DBC_Specification.md http://socialledge.com/sjsu/index.php/DBC_Format. Great insipiration for reverse engineering the CAN messages was this thread relating to E46 CAN bus messages: https://www.bimmerforums.com/forum/showthread.php?1887229-E46-Can-bus-project. Also for some other chassis CAN msgs see dzid's issue https://github.com/killinen/BrakeModule/issues/1.
+
+---
+
+## Next iteration
+
+If I have the insipiration to make of BM v0.3.3, there could be: 
+- Fixes for HW bugs (funny I found few). 
+- Reduce part count (simplify).
+- Maybe add (working) brake light switch low side sensing (redundancy).
+- Maybe 4 layer PCB desing (could lower the power tracing resistance?)
+- Maybe use of different kind of power MOSFET (is the footprint right).
+
+
+### Possible v0.4
+
+Possibly ditch the pump side relays and make same kinda MOSFET configuration that in the DSC module. Then sense the DSC wires and drive the pump accordingly. Below is picture that shows voltage in millivolts (DSC_VOLTAGE) measured from DSC+ wire. There seems to be somekinda bootstrapping cycle and somehow voltage is increased when the pump is running driven by the BrakeModule. The pump running can be observed from the PWM value (2047 = 100% dutycycle). Brakepressure (bar) is shown for reference. The pressure reading wo pump been driven is me pressing the brake pedal :)
+
+<p align="center">
+  <img src="Pics/DSC_VOLT.png?raw=true">
+</p>
+
+The unfortunate thing in these voltage spikes are IMO that if you would like to eliminate the change of charge pump not running when DSC module is demanding it but BrakeModule controlling the pump it will result of somewhat of an lag if you are waiting to see that is this voltage spike bootstrapping cycle or an real pump control demand. Will this result an real world meningful lag, I can't really say.
+
+In older HW v0.2 I have used (tested) relay or N-channel MOSFET for controlling the LOW side BLS signal line (S_BLS). I somehow prefer the use of NC-relay, but maybe tranfer to some other type of solution in the future. Dual channel MOSFET IC maybe or something.
 
 ---
 
