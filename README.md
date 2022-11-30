@@ -70,6 +70,16 @@ If someone want's to deep dive closer on Bosch DSC 5.7 ABS Module Diagnosis and 
 
 Further knowledge on how BOSCH 5.7/DSCIII works, look at https://github.com/killinen/BrakeModule/blob/main/dsc_system.pdf in the repo.
 
+Control module/DSC hydraulic unit shown in M54 engine bay.
+<p align="left">
+  <img src="Pics/ABSunit.PNG?raw=true">
+</p>
+
+Charge pump shown in M62TU engine bay.
+<p align="left">
+  <img src="Pics/Pump.PNG?raw=true">
+</p>
+
 ## The name of the Man-in-the-middle is Brake Module
 The basic idea to take control of the ABS/DSC unit ability to brake is to use man-in-the-middle tactic (https://en.wikipedia.org/wiki/Man-in-the-middle_attack). This is implemented by taking the charge pump control from ABS module so that it wont confuse any diagnostic systems by: 
 1. Disconnecting the BOSCH control module from the charge pump and connect the charge pump wires from module with resistor so that the control module "thinks" that the pump is connected. If wires are disconnected, module throws an charge pump error, because it will detect open circuit with the feedback lines (f/b) shown in handwritten schematic. 
@@ -89,16 +99,6 @@ Brake light switch has 4 wires: 12V, ground, signal LOW, signal 2 HIGH. Signal L
 In E39 The DME control unit evaluates the signals for the purpose of registering brake operation. The brake-light switch connects to earth (B-), the brake-light test switch connects to B+. And uses this truth table for operation:
 <p align="center">
   <img src="Pics/BLS_logik.PNG?raw=true">
-</p>
-
-Control module/DSC hydraulic unit shown in M54 engine bay.
-<p align="left">
-  <img src="Pics/ABSunit.PNG?raw=true">
-</p>
-
-Charge pump shown in M62TU engine bay.
-<p align="left">
-  <img src="Pics/Pump.PNG?raw=true">
 </p>
 
 ---
@@ -179,7 +179,7 @@ For discussion of "old" cars impelementation of OPENPILOT join discord: discord 
 ---
 
 ## OT of CAN bus messages
-if someone want to see what CAN messages are in E39 CAN bus see https://github.com/killinen/opendbc/blob/master/BMW_E39.dbc (this is not perfect, would be cool if someone else would like to look into it). This is in OPENDBC format. If don't know what DBC is here's couple good reads https://github.com/stefanhoelzl/CANpy/blob/master/docs/DBC_Specification.md http://socialledge.com/sjsu/index.php/DBC_Format. Great insipiration for reverse engineering the CAN messages was this thread relating to E46 CAN bus messages: https://www.bimmerforums.com/forum/showthread.php?1887229-E46-Can-bus-project. Also for some other chassis CAN msgs see dzid's issue https://github.com/killinen/BrakeModule/issues/1.
+if someone want to see some CAN messages in E39 CAN bus https://github.com/killinen/opendbc/blob/master/BMW_E39.dbc (this is not perfect, would be cool if someone else would like to look into it). This is in OPENDBC format. If don't know what DBC is here's couple good reads https://github.com/stefanhoelzl/CANpy/blob/master/docs/DBC_Specification.md http://socialledge.com/sjsu/index.php/DBC_Format. Great insipiration for reverse engineering the CAN messages was this thread relating to E46 CAN bus messages: https://www.bimmerforums.com/forum/showthread.php?1887229-E46-Can-bus-project. Also for some other chassis CAN msgs see dzid's issue https://github.com/killinen/BrakeModule/issues/1.
 
 ---
 
