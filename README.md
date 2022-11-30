@@ -34,7 +34,13 @@ This module could be used with other adaptive cruise control systems (ACC) with 
 ---
 
 ## Working principle
-Superabstaract of BOSCH 5.7/DSCIII system. In my mind the system can be roughly derived into few subsystems: control module (ECU) that is responsible all of the electrical stuff, valves that control the brakefluid flow, ABS relief pump, charge pump (also known as pre-charge pump) and sensors that monitor the system and the trajectory of the car. In ABS/DSC situation control module can reduce cars motor torque via CAN messages, relief brake pressure on individual brakes with valves and ABS relief pump or apply pressure to certain brakes by controlling the valves and running the charge pump.
+Superabstaract of BOSCH 5.7/DSCIII system: 
+The system can be roughly devided into few subsystems: 
+- control module (ECU) that is responsible all of the electrical stuff
+- valves that control the brakefluid flow
+- ABS relief pump, charge pump (also known as pre-charge pump)
+- sensors that monitor the system and the trajectory of the car. 
+In ABS/DSC situation control module can reduce cars motor torque via CAN messages, relief brake pressure on individual brakes with valves and ABS relief pump or apply pressure to certain brakes by controlling the valves and running the charge pump.
 
 Picture of BOSCH system with DSCIII.
 <p align="left">
@@ -94,13 +100,13 @@ In this development stage the main components of the hardware is LGT8F328P LQFP3
 
 Picture of PCB of BrakeModule v0.2.
 <p align="center">
-  <img src="Pics/BM0.2.PNG?raw=true">
+  <img src="Pics/PCB_032.PNG?raw=true">
 </p>
 
 BrakeModule PCB is mounted on 3D-printed case with 4 relay module, and attachments for the fan.
 Picture of BrakeModule.
 <p align="center">
-  <img src="Pics/BM.jpg?raw=true">
+  <img src="Pics/20220817_162326.jpg?raw=true">
 </p>
 
 The PCB layout is much improved on the next generation and should not give too much thought. Example there are not use of 2 power MOSFETs (TO220 and TO252) these slots are for testing purposes.
