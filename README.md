@@ -1,5 +1,4 @@
 # BrakeModule
-
 ---
 
 This project has been created to solve the need of make an MY99 BMW 540i (E39) to brake with use of semiautonoumous driving software OPENPILOT.
