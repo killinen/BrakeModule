@@ -30,6 +30,14 @@ Video introducing OPENPILOT.
 
 [![](https://img.youtube.com/vi/NmBfgOanCyk/0.jpg)](https://youtu.be/NmBfgOanCyk)
 
+My implementation (fork) of OPENPILOT now uses only vision based ACC with stop and go capability. Lateral control is WIP.
+
+
+
+https://user-images.githubusercontent.com/37126045/204830637-9adcd51b-5c41-4f0d-8b8d-8c93d2226a8f.mp4
+
+
+
 This module could be used with other adaptive cruise control systems (ACC) with modifying the software.
 
 ---
