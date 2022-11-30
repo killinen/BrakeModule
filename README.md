@@ -30,7 +30,7 @@ Video introducing OPENPILOT.
 
 [![](https://img.youtube.com/vi/NmBfgOanCyk/0.jpg)](https://youtu.be/NmBfgOanCyk)
 
-My implementation (fork) of OPENPILOT now uses only vision based ACC with stop and go capability. Lateral control is WIP. Top left of the screen shows the set speed 87 km/h and top center the current speed reduced by the vision system that detects the lead cars distance, speed and accel/decelration.
+My implementation (fork) of OPENPILOT now uses only vision based ACC with stop and go capability. Lateral control is WIP. Top left of the screen shows the set speed 87 (km/h) and top center the current speed reduced by the vision system that detects the lead cars distance, speed and accel/decelration.
 
 
 https://user-images.githubusercontent.com/37126045/204830637-9adcd51b-5c41-4f0d-8b8d-8c93d2226a8f.mp4
