@@ -168,9 +168,10 @@ Some of the decoded CAN messages that is on E39 CAN bus can be found here: https
 
 ## Next iteration
 
-If I have the insipiration to make of BM v0.3.3, there could be: 
-- Fixes for HW bugs (funny I found few). 
+If I have the insipiration to make of BM v0.3.3 I would: 
+- Fix HW bugs (funny I found few). 
 - Reduce part count (simplify).
+- Get rid of extra DSC voltage divider circuit in the upper right corner of PCB (useless).
 - Maybe add (working) brake light switch low side sensing (redundancy).
 - Maybe 4 layer PCB desing (could lower the power tracing resistance?)
 - Maybe use of different kind of power MOSFET (is the footprint right).
