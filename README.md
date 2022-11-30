@@ -147,16 +147,15 @@ The software has been developed to STM32F103 chip in arduino IDE with some STM32
 
 Normally charge pump is controlled via BOSCH control module (relays are on NC mode) but when decelaration demand from OP is detected in CAN msg 0x343 (BRK_CMD), it'll disconnect the module from the pump and start controlling the pump with 15 kHz PWM signal of the power MOSFET (relays state are switched OFF from NC mode). Also brake light swithes HIGH (S_BLTS) and LOW (S_BLS) signal lines are driven so that the car detects brake pedal pressed event. When BRK_CMD demand is no longer detected, first 12V line and ground (PWR MOSFET) will be disconnected from the pump and after 600 ms DSC control module is switch back inline with the pump. Also brakelight switch is turned OFF. This delay is because if the transition from pump activated with BrakeModule back to DSC module is too fast, DSC module will give error code. I think this is caused of pump still rotating (generating voltage to pump wires) and you will connect the pump to DSC module, modules feedback lines detects voltage at the pump when it shouldn't and gives an error or brake pressure is seen in brake circuit and brakelight switch is turned off.
 
-See below if it true ATM (not been implemented in this HW version).
-TMP36 measures power MOSFET temperature every 10 seconds and small fan will turn on if over 45 degrees is detected. Also if temperature exceeds 80 degrees, brake module will disable OPENPILOT and wont engage until temperature is below that (this might is not nessaccary at least haven't been for me).
-
 Speed value (car_speed) is read on message 0x153 and send to OPENPILOT as ACC set speed when OP is engaged (set_speed). Brake pedal state is read on message 0x329 (BRK_ST) and sent to OP when there is no braking demand and pedal press is detected to disengage OP (BRK_ST_OP). BMW cruise control steering wheel button presses (BTN_CMD) are detected on same message. If BTN_CMD contains RESUME button press, it will engage or disengage the OP ACC depenfing on state. BTN_CMD includes steering wheel + and - button presses and adjusts the set speed of the OP ACC accordingly when those buttons are pressed. Cruise control state (OCC) is detected on 0x545 and if it is on OP wont engage to prevent original CC and OP to control longnitudinal simultatoneusly.
 
 <!--- Filtering of CAN messages are used to give better change to not to lose wanted messages. After filtering measured capture rate of CAN messages was 99.97 % in 1 minute test with Arduino Nano, with LGT8F328P little bit better. Average loop time per 1 million loopcycles was ~31 uS w Nano (measured with millis() function).---> 
 
-If DEBUG is #defined you can control the board via serial (look at the readSerial() function) + some debugging messages are shown.
-
 BrakeModule is used to emulate TOYOTA corollas cruise controller because this is the car which is used on my OPENPILOT fork. This implementation is shown as sent data sent in 0x1D2 and 0x1D3 CAN messages which are originally used by TOYOTA cruise controller. The use of TOYOTA in OP is from legacy reasons because the first guy that used OP on older cars implement it on TOYOTA Celica and my code is just revision of that.
+
+If DEBUG is #defined in software you can control the board via serial (look at the readSerial() function) + some debugging messages are shown.
+
+If #FAN is defined in software TMP36 measures power MOSFET temperature every 10 seconds and small fan will turn on if over 45 degrees is detected. Also if temperature exceeds 80 degrees, brake module will disable OPENPILOT and wont engage until temperature is below that (this might is not nessaccary at least haven't been for me).
 
  <!--- For discussion of "old" cars impelementation of OPENPILOT join discord: discord server link here. ---> 
  
