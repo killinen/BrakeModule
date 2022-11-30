@@ -102,7 +102,7 @@ Brake light switch has 4 wires: 12V, ground, signal LOW, signal 2 HIGH. Signal L
   <img src="Pics/Brake light switch.JPG?raw=true">
 </p>
 
-In E39 The DME control unit evaluates the signals for the purpose of registering brake operation. The brake-light switch connects to earth (B-), the brake-light test switch connects to B+. And uses this truth table for operation:
+In E39 the DME control unit evaluates the signals for the purpose of registering brake operation. The brake-light switch connects to earth (B-), the brake-light test switch connects to B+. And uses this truth table for operation:
 <p align="center">
   <img src="Pics/BLS_logik.PNG?raw=true">
 </p>
