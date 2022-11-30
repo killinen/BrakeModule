@@ -109,7 +109,7 @@ In E39 The DME control unit evaluates the signals for the purpose of registering
 
 ---
 
-## BrakeModule HARDWARE
+## BrakeModule HW
 
 Brakemodule main functionalities are 3 relays for switching charge pump inline with DSC system or BrakeModule. 1 power MOSFET to control the charge pump. Temperature measurement to read the power MOSFET temperature. FAN + mosfet to cool down the power MOSFET. CAN module is used for communication. Voltage divider is used to measure DSC+ line voltage and cars brake light switch.
 
@@ -165,7 +165,7 @@ In older HW v0.2 I have used (tested) relay or N-channel MOSFET for controlling 
 
 ---
 
-## BrakeModule SOFTWARE
+## BrakeModule SW
 
 The software has been developed in arduino IDE to LGT8F328P board with Arduino Nano compability in mind. The next generation of the module most likely uses Blue Pill development board (STM32F103). Normally charge pump is controlled via BOSCH control module (relays are on NC mode) but when decelaration demand from OP is detected in CAN msg 0x343 (BRK_CMD), it'll disconnect the module from the pump and start controlling the pump with 15 kHz PWM signal of the power MOSFET (relays state are switched OFF from NC mode). Also brake light swithes HIGH (S_BLTS) and LOW (S_BLS) signal lines are driven so that the car detects brake pedal pressed event. When BRK_CMD demand is no longer detected, first 12V line and ground (PWR MOSFET) will be disconnected from the pump and after 600 ms DSC control module is switch back inline with the pump. Also brakelight switch is turned OFF. This delay is because if the transition from pump activated with BrakeModule back to DSC module is too fast, DSC modue will give error code. I think this is caused of pump still rotating (generating voltage to pump wires) and you will connect the pump to DSC module, modules feedback lines detects voltage at the pump when it shouldn't and gives an error.
 
