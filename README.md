@@ -36,6 +36,7 @@ This module could be used with other adaptive cruise control systems (ACC) with 
 ---
 
 ### Working principle
+
 ## Abstract of BOSCH 5.7/DSCIII system
 The system can be roughly devided into few subsystems: 
 - control module (ECU) that is responsible all of the logic and electrical stuff
