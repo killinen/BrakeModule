@@ -81,9 +81,10 @@ Charge pump shown in M62TU engine bay.
 
 ## The name of the Man-in-the-middle is BrakeModule
 The basic idea to take control of the ABS/DSC unit ability to brake is to use man-in-the-middle tactic (https://en.wikipedia.org/wiki/Man-in-the-middle_attack). This is implemented by taking the charge pump control from ABS module so that it wont confuse any diagnostic systems by: 
-1. Disconnecting the BOSCH control module from the charge pump and connect the charge pump wires from module with resistor so that the control module "thinks" that the pump is connected. If wires are disconnected, module throws an charge pump error, because it will detect open circuit with the feedback lines (f/b) shown in handwritten schematic. 
-2. Connecting 12V to the pump and use N-channel power MOSFET to adjust to charge pump yield (brake pressure). 
-3. One has to manipulate also the cars brake light (pedal) switch because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. 
+1. Disconnecting the BOSCH control module from the charge pump 
+2. Reconnecting the charge pump wires from module with resistor so that the control module "thinks" that the pump is connected. If wires are disconnected, module throws an charge pump error, because it will detect open circuit via the feedback lines (f/b) shown in handwritten schematic. 
+3. Connecting 12V to the pump and use N-channel power MOSFET to adjust to charge pump load (brake pressure). 
+4. Manipulating the cars brake light (pedal) switch detection wires, because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. 
 
 Main principle of driving charge pump and brakelight switch with BrakeModule.
 <p align="center">
