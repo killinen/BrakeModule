@@ -7,7 +7,7 @@ This project has been created to solve the need of make an MY99 BMW 540i (E39) t
 
 ### Disclaimer
 
-The software and hardware of this project has been done by fellow that have no knowledge of anykind on automotive, software or hardware developing stuff nor electrical engineering. So if you use it as is keep in mind that there is some change that the BrakeModule will behave unwantetly or will damage your cars electrical system!
+The software and hardware of this project has been done by fellow that have no knowledge of anykind on automotive, software or hardware developing stuff nor electrical engineering. So if you use it as is keep in mind that there is some change that the BrakeModule will behave unwantedly or will damage your cars electrical system!
 If you have better knowledge than I, please contribute on developing this.
 
 ---
