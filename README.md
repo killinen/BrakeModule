@@ -174,7 +174,7 @@ TMP36 measures power MOSFET temperature every 10 seconds and small fan will turn
 
 Speed value (car_speed) is read on message 0x153 and send to OPENPILOT as ACC set speed when OP is engaged (set_speed). Brake pedal state is read on message 0x329 (BRK_ST) and sent to OP when there is no braking demand and pedal press is detected to disengage OP (BRK_ST_OP). BMW cruise control steering wheel button presses (BTN_CMD) are detected on same message. If BTN_CMD contains RESUME button press, it will engage or disengage the OP ACC depenfing on state. BTN_CMD includes steering wheel + and - button presses and adjusts the set speed of the OP ACC accordingly when those buttons are pressed. Cruise control state (OCC) is detected on 0x545 and if it is on OP wont engage to prevent original CC and OP to control longnitudinal simultatoneusly.
 
-Filtering of CAN messages are used to give better change to not to lose wanted messages. After filtering measured capture rate of CAN messages was 99.97 % in 1 minute test with Arduino Nano, with LGT8F328P little bit better. Average loop time per 1 million loopcycles was ~31 uS w Nano (measured with millis() function).
+<!--- Filtering of CAN messages are used to give better change to not to lose wanted messages. After filtering measured capture rate of CAN messages was 99.97 % in 1 minute test with Arduino Nano, with LGT8F328P little bit better. Average loop time per 1 million loopcycles was ~31 uS w Nano (measured with millis() function).---> 
 
 If DEBUG is #defined you can control the board via serial (look at the readSerial() function) + some debugging messages are shown.
 
