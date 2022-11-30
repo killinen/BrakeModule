@@ -146,7 +146,7 @@ Picture of BrakeModule inside 3D-printed case.
 If I have the insipiration to make of BM v0.3.3, there could be: 
 - Fixes for HW bugs (funny I found few). 
 - Reduce part count (simplify).
-- Maybe add brake light switch low side sensing (redundancy).
+- Maybe add (working) brake light switch low side sensing (redundancy).
 - Maybe 4 layer PCB desing (could lower the power tracing resistance?)
 - Maybe use of different kind of power MOSFET (is the footprint right).
 
