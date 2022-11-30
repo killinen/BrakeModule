@@ -61,7 +61,7 @@ Picture of BOSCH system with DSCIII.
 
 As the charge pump is responsible of the increase of the pressure in the brake circuit (10-15 bar), if one can control it, can also control cars deceleration (braking). The charge pump is controlled by 2 N-channel MOSFETs inside the control module in halfbrige configuration.
 
-Pic of 2 FETs inside the module, right one is damaged. These are not the regular type black thingies (TO220) that you normally see as MOSFETs.
+Pic of the 2 FETs inside the module, right one is damaged. These are not the regular type black thingies (TO220) that you normally see as MOSFETs.
 <p align="left">
   <img src="Pics/PumpFETs.PNG?raw=true">
 </p>
