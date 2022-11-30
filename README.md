@@ -144,7 +144,7 @@ Picture of BrakeModule inside 3D-printed case.
 
 ## Next iteration
 
-If I have the insipiration to make of BM 0.3.3, there could be: 
+If I have the insipiration to make of BM v0.3.3, there could be: 
 - Fixes for HW bugs (funny I found few). 
 - Reduce part count (simplify).
 - Maybe add brake light switch low side sensing (redundancy).
