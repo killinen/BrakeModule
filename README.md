@@ -143,7 +143,7 @@ Picture of BrakeModule inside 3D-printed case.
 
 ## BrakeModule SW
 
-The software has been developed to STM32F103 chip in arduino IDE with some STM32Cube HAL functionality had been added. The previous version 0.2 of the board was based on LGT8F328P board with Arduino Nano compability in mind, so there might be some legacy thing from there. 
+The software has been developed to STM32F103 chip in arduino IDE with some STM32Cube HAL functionality been added. The previous version 0.2 of the board was based on LGT8F328P board with Arduino Nano compability in mind, so there might be some legacy thing from there. 
 
 Normally charge pump is controlled via BOSCH control module (relays are on NC mode) but when decelaration demand from OP is detected in CAN msg 0x343 (BRK_CMD), it'll disconnect the module from the pump and start controlling the pump with 15 kHz PWM signal of the power MOSFET (relays state are switched OFF from NC mode). Also brake light swithes HIGH (S_BLTS) and LOW (S_BLS) signal lines are driven so that the car detects brake pedal pressed event. When BRK_CMD demand is no longer detected, first 12V line and ground (PWR MOSFET) will be disconnected from the pump and after 600 ms DSC control module is switch back inline with the pump. Also brakelight switch is turned OFF. This delay is because if the transition from pump activated with BrakeModule back to DSC module is too fast, DSC module will give error code. I think this is caused of pump still rotating (generating voltage to pump wires) and you will connect the pump to DSC module, modules feedback lines detects voltage at the pump when it shouldn't and gives an error or brake pressure is seen in brake circuit and brakelight switch is turned off.
 
