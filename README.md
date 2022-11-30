@@ -200,7 +200,7 @@ If you damage the ABS control unit it is quite hard to repair and if bought new 
 
 I don't know what is the max capability of the charge pump eg. if you run it too long can it overheat or something. The software does not restrict this at all.
 
-If brake pedal is pressed hard and BrakeModule is controlling the pump and switched back to "normal mode", DSC will give an error.
+If brake pedal is pressed hard and BrakeModule is controlling the pump and switched back to "normal mode", DSC will give an error (this might be solved).
 
 Good design would prolly be to install the module on a professional case so components wouldn't be exposed with integrated heat dispersion.
 
