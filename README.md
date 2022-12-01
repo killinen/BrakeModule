@@ -21,44 +21,44 @@ List of cars that use BOSCH 5.7 system found on the internet.
   <img src="Pics/Bosch57cars.PNG?raw=true">
 </p>
 
-I'm not sure if these are compatible cars, eg. is BOSCH 5.7 system == charge pump system eg. DSCIII (or similar), that needs to be in place to brake the car?
+I'm not sure if these are compatible cars, meaning that does these have charge pump that needs to be in place to brake the car.
 
-The BrakeModule has been designed to read brake request values that are sent from OPENPILOT via CAN bus. OPENPILOT (OP) is opensource semiautonomous system (software) that can possibly be retrofitted to your car to have LEVEL 2 autonomous system. The OPENPILOT needs to be able to control longnitudinal (acceleration and deceleratio) and lateral (steering) via CAN bus. https://github.com/commaai/openpilot
+The BrakeModule has been designed to receive brake request values from OPENPILOT via the CAN bus. OPENPILOT is an open source driver assistance system that offers Automated Lane Centering and Adaptive Cruise Control for over 200 supported car makes and models. To function properly, OPENPILOT needs to be able to control the longitudinal (gas and brake) and lateral (steering) movements of the car using the CAN bus. For more information, see https://github.com/commaai/openpilot.
 
 Video introducing OPENPILOT.
 
 [![](https://img.youtube.com/vi/NmBfgOanCyk/0.jpg)](https://youtu.be/NmBfgOanCyk)
 
-My implementation (fork) of OPENPILOT atm uses only vision based ACC with stop and go capability. Lateral control is WIP. Top left of the screen shows the set speed 87 (km/h) and top center the current speed reduced by the vision system that detects the lead cars distance, speed and accel/deceleration.
+My implementation (fork) of OPENPILOT atm uses only vision based ACC (no radar) with stop and go capability. Lateral control is WIP. Top left of the screen shows the set speed 87 (km/h) and top center the current speed reduced by the vision system that detects the lead cars distance, speed and accel/deceleration.
 
 
 https://user-images.githubusercontent.com/37126045/204889544-91e67136-c381-4791-b589-27530b2b94af.mp4
 
 
-This module could be used with other adaptive cruise control systems (ACC) with modifying the software.
+The BrakeModule could potentially be used with other adaptive cruise control systems (ACC) by modifying its software.
 
 ---
 
 ## Working principle
 ### Abstract of BOSCH 5.7/DSCIII system
 The system can be roughly devided into few subsystems: 
-- control module (BCU) that is responsible all of the logic and electrical stuff
+- control module (ECU) that is responsible all of the logic and electrical stuff
 - valves that control the brakefluid flow
 - ABS relief pump
 - charge pump (also known as pre-charge pump)
 - sensors that monitor the system and the trajectory of the car. 
 
-If ABS or DSC events are detected by the control module by reading the sensor values determinating with that the car state, the module can will (depending of situation):
+The ABS module monitors the car's state using its sensors, and determines if ABS or DSC intervention is required. In such cases, the module will generally take the following actions:
 - reduce motor torque requesting it via sending CAN messages to the DME (motor ECU)
 - relief pressure of individual brakes by controlling the valves and running the ABS relief pump (ABS event).
 - apply pressure to individual brakes by controlling the valves and running the charge pump (DSC event).
 
-Picture of BOSCH system with DSCIII.
+Picture of BOSCH 5.7 with DSCIII.
 <p align="left">
   <img src="Pics/DSCIII.PNG?raw=true">
 </p>
 
-As the charge pump is responsible of the increase of the pressure in the brake circuit (10-15 bar), if one can control it, can also control cars deceleration (braking). The charge pump is controlled by 2 N-channel MOSFETs inside the control module in halfbrige configuration.
+By controlling the charge pump, which is responsible for increasing the pressure in the brake circuit (10-15 bar), we can also control the car's deceleration (braking). The charge pump is controlled by two N-channel MOSFETs inside the control module, in a half-bridge configuration.
 
 Pic of the 2 FETs inside the module, right one is damaged. These are not the regular type black thingies (type TO-220) that you likely see as MOSFETs.
 <p align="left">
@@ -74,7 +74,7 @@ If someone want's to deep dive closer on Bosch DSC 5.7 ABS Module Diagnosis and 
 
 Further knowledge on how BOSCH 5.7/DSCIII works, look at https://github.com/killinen/BrakeModule/blob/main/dsc_system.pdf in the repo.
 
-Control module/DSC hydraulic unit shown in M54 engine bay.
+Control module/hydraulic unit shown in M54 engine bay.
 <p align="left">
   <img src="Pics/ABSunit.PNG?raw=true">
 </p>
@@ -85,11 +85,12 @@ Charge pump shown in M62TU engine bay.
 </p>
 
 ## The name of the Man-in-the-middle is BrakeModule
-The basic idea to take control of the ABS/DSC unit ability to brake is to use man-in-the-middle tactic (https://en.wikipedia.org/wiki/Man-in-the-middle_attack). This is implemented by taking the charge pump control from ABS module so that it wont confuse any diagnostic systems by: 
-1. Disconnecting the BOSCH control module from the charge pump 
-2. Reconnecting the charge pump wires from module with resistor so that the control module "thinks" that the pump is connected. If wires are disconnected, module throws an charge pump error, because it will detect open circuit via the feedback lines (f/b) shown in handwritten schematic. 
+The concept behind gaining control of the ABS/DSC unit's braking ability is to use a man-in-the-middle tactic (https://en.wikipedia.org/wiki/Man-in-the-middle_attack). This can be achieved by taking control of the charge pump from the ABS module, preventing any diagnostic systems from being confused. To take control of the ABS/DSC unit's braking ability, the following steps can be taken:
+1. Disconnect the BOSCH control module from the charge pump.
+2. Reconnect the charge pump wires to a resistor so that the control module "thinks" that the pump is still connected. If the wires are disconnected, the module will throw a charge pump error because it will detect an open circuit via the feedback lines (f/b), shown in handwritten schematic.
 3. Connecting 12V to the pump and use N-channel power MOSFET to adjust to charge pump load (brake pressure). 
-4. Manipulating the cars brake light (pedal) switch detection wires, because if car detects increased brake pressure in the system without detection of brake pedal beeing pressed, it throws an brake pressure sensor defekt error. 
+4. Manipulating the cars brake light (pedal) switch signal wires, as increased brake pressure in the system without detection of the brake pedal being pressed will cause a brake pressure sensor defekt error.
+5. The BrakeModule determines its operations by reading messages from the car's CAN bus, where OPENPILOT is also connected.
 
 Main principle of driving charge pump and brakelight switch with BrakeModule.
 <p align="center">
@@ -110,9 +111,13 @@ In E39 the DME control unit evaluates the signals for the purpose of registering
 
 ## BrakeModule HW
 
-Brakemodule main functionalities are 3 relays for switching charge pump inline with DSC system or BrakeModule. 1 power MOSFET to control the charge pump. Temperature measurement to read the power MOSFET temperature. FAN + mosfet to cool down the power MOSFET. CAN module is used for communication. Voltage divider is used to measure DSC+ line voltage and cars brake light switch.
+The BrakeModule has three main functionalities:
+1. Three relays that switch the charge pump in line with the DSC system or the BrakeModule.
+2. A power MOSFET that controls the charge pump.
+3. A temperature measurement system to monitor the power MOSFET temperature, along with a FAN to cool it down.
+Additionally, the BrakeModule uses a CAN module for communication and a voltage divider to measure the DSC+ line voltage and the car's brake light switch.
 
-The board size is around 110x82mm and it contains.
+The board size is 110x82mm and it contains.
 - Blue Pill development board containing STM32F103 MCU.
 - MCP2551 high-speed CAN protocol controller bus interface module for commucation.
 - 3 SMIH-12VDC-SL-C relays for switching the charge pump in/offline. 
@@ -123,7 +128,7 @@ The board size is around 110x82mm and it contains.
 - TMP36 temperature sensor for MOSFET. 
 - SOT23-NPN transistors for common switching purposes, eg. possible fan.
 - TO92-NPN transistors for driving the SMIH-12VDC-SL-C relays
-- Have USB to UART (FTDI) connector for updating the software and debugging.
+- USB to UART (FTDI) connector for updating the software and debugging.
 - Voltage dividers for sensing brake pedal high side (S_BLTS) and DSC charge pump driver state (is voltage fed to CP via DSC).
 
 
@@ -161,7 +166,7 @@ If #FAN_CTRL is defined in software and temperature over 45 degrees is measured 
 ---
 
 ## OT of CAN bus messages
-Some of the decoded CAN messages that is on E39 CAN bus can be found here: https://github.com/killinen/opendbc/blob/master/BMW_E39.dbc (I'm sure this is not perfect, would be cool if someone else would like to look into it). It is in OPENDBC format, here's couple good reads what DBC is. https://github.com/stefanhoelzl/CANpy/blob/master/docs/DBC_Specification.md http://socialledge.com/sjsu/index.php/DBC_Format. Great insipiration for reverse engineering the CAN messages was this thread relating to E46 CAN bus messages: https://www.bimmerforums.com/forum/showthread.php?1887229-E46-Can-bus-project. Also for some other chassis CAN msgs see dzid's issue https://github.com/killinen/BrakeModule/issues/1. Python library for en/decoding DCB's https://cantools.readthedocs.io/en/latest/.
+Some of the decoded CAN messages that is on E39 CAN bus can be found here: https://github.com/killinen/opendbc/blob/master/BMW_E39.dbc (I'm sure this is not perfect, would be cool if someone else would like to look into it). It is in openDBC format, here's couple good reads what DBC is. https://github.com/stefanhoelzl/CANpy/blob/master/docs/DBC_Specification.md http://socialledge.com/sjsu/index.php/DBC_Format. Great insipiration for reverse engineering the CAN messages was this thread relating to E46 CAN bus messages: https://www.bimmerforums.com/forum/showthread.php?1887229-E46-Can-bus-project. Also for some other chassis CAN msgs see dzid's issue https://github.com/killinen/BrakeModule/issues/1. Python library for en/decoding DBC's https://cantools.readthedocs.io/en/latest/.
 
 ---
 
@@ -184,7 +189,7 @@ Ditch the pump side relays and make same kinda MOSFET configuration that in the 
   <img src="Pics/DSC_VOLT.png?raw=true">
 </p>
 
-The unfortunate thing in these voltage spikes are IMO that if you would like to eliminate the change of charge pump not running when DSC module is demanding it but BrakeModule controlling the pump it will result of somewhat of an lag if you are waiting to see that is this voltage spike bootstrapping cycle or an real pump control demand. Will this result an real world meningful lag, I can't really say.
+The unfortunate thing in these voltage spikes are IMO that if you would like to eliminate the change of charge pump not running when DSC module is demanding it but BrakeModule controlling the pump it will result of somewhat of an lag if you are waiting to see that is this voltage spike bootstrapping cycle or an real pump control demand. Will this result an real world meningful lag, I can't really say (this doesn't affect only w v0.4 but current system also).
 
 In older HW v0.2 I have used (tested) relay or N-channel MOSFET for controlling the LOW side BLS signal line (S_BLS). I somehow prefer the use of NC-relay, but maybe tranfer to some other type of solution in the future. Dual channel MOSFET IC maybe or something.
 
