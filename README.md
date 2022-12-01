@@ -13,9 +13,9 @@ The software and hardware of this project has been done by fellow that have no k
 
 ## BACKROUND
 
-This module has been developed with use of car which uses BOSCH ABS 5.7 Dynamic Stability Control system 3 (DSCIII). This system is used on several different cars so it could possibly be used with these car only software modification. The description of the system is what I have found on my system, yours may vary. I also make a lot of assumptions of how the system works on based on what I have seen but I don't have near close to 100% certainty of it. There might be a change this could be used on BOSCH 5.3 system if DSCIII implemented.
+This module has been developed with use of car which uses BOSCH ABS 5.7 Dynamic Stability Control system 3 (DSCIII). This system is used on several different car manufacturers so it could possibly be used on those with software modification. The system description here is what I have found on my car, yours may vary. I also make a lot of assumptions of how the system works on based on what I have seen, but I don't have near close to 100% certainty of it. There might also be a change this could be used on BOSCH 5.3 system, if DSCIII (or similar) is implemented.
 
-Some list of of cars that use BOSCH 5.7 system found on the internet.
+List of cars that use BOSCH 5.7 system found on the internet.
 
 <p align="left">
   <img src="Pics/Bosch57cars.PNG?raw=true">
@@ -23,7 +23,7 @@ Some list of of cars that use BOSCH 5.7 system found on the internet.
 
 I'm not sure if these are compatible cars, eg. is BOSCH 5.7 system == charge pump system eg. DSCIII (or similar), that needs to be in place to brake the car?
 
-The SOFTWARE has been designed to read braking demand values from CAN bus that are sent from OPENPILOT. OPENPILOT (OP) is opensource semiautonomous system (software) that can possibly be retrofitted to your car to have LEVEL 2 autonomous system. The OPENPILOT needs to be able to control longnitudinal (acceleration and deceleratio) and lateral (steering) via CAN bus. https://github.com/commaai/openpilot
+The BrakeModule has been designed to read brake request values that are sent from OPENPILOT via CAN bus. OPENPILOT (OP) is opensource semiautonomous system (software) that can possibly be retrofitted to your car to have LEVEL 2 autonomous system. The OPENPILOT needs to be able to control longnitudinal (acceleration and deceleratio) and lateral (steering) via CAN bus. https://github.com/commaai/openpilot
 
 Video introducing OPENPILOT.
 
@@ -42,7 +42,7 @@ This module could be used with other adaptive cruise control systems (ACC) with 
 ## Working principle
 ### Abstract of BOSCH 5.7/DSCIII system
 The system can be roughly devided into few subsystems: 
-- control module (ECU) that is responsible all of the logic and electrical stuff
+- control module (BCU) that is responsible all of the logic and electrical stuff
 - valves that control the brakefluid flow
 - ABS relief pump
 - charge pump (also known as pre-charge pump)
@@ -193,11 +193,11 @@ In older HW v0.2 I have used (tested) relay or N-channel MOSFET for controlling 
 ### Problems that I know of
 What I have understand there are standards for automotive hardware and software design and this does project does not follow any of those.
 
-The main worry point that I have is that if an stability control event should happen on the same time that BrakeModule is controlling the charge pump there is quite high change that the stability control system won't funtion as planned. This is an issue that I want to test in the future.
+The main worry point that I have is that if an stability control event should happen on the same time that BrakeModule is controlling the charge pump, there is non trivial change that the stability control system won't funtion as planned. This said I seen haven't had any problematic events yet, but understand that it would need much more testing to be confident that it won't happen. This is an issue that I would like to test in the future.
 
-If you damage the ABS control unit it is quite hard to repair and if bought new also quite pricey. I give no promises that using the BrakeModule won't brake anything. I think even that it is somewhat likely that it could happen at least with this HARDWARE/SOFTWARE. Knock on wood, I haven't broke my unit even though it has had quite a bit of rough love. Thanks to German engineer.
+If you damage the ABS control unit it is quite hard to repair and if bought new also quite pricey. I give no promises that using the BrakeModule won't brake anything. Knock on wood, I haven't broke my unit even though it has had quite a bit of rough love. Thanks to German engineer.
 
-I don't know what is the max capability of the charge pump eg. if you run it too long can it overheat or something. The software does not restrict this at all.
+I don't know what is the max capability of the charge pump eg. if you run it too long can it overheat or something. The software does not restrict this at all. I have run the charge pump quite alot in red lights in Nordic climate (best outside 25-30°C), and at least yet it hasn't failed. In hotter days I've seen decrease in max brake pressure that pump can yiels, which assumably is result of brakefluid getting hot.
 
 If brake pedal is pressed hard and BrakeModule is controlling the pump and switched back to "normal mode", DSC will give an error (this might be solved).
 
