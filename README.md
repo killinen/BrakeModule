@@ -191,7 +191,7 @@ Ditch the pump side relays and make same kinda MOSFET configuration that in the 
 
 The unfortunate thing in these voltage spikes are IMO that if you would like to eliminate the change of charge pump not running when DSC module is demanding it but BrakeModule controlling the pump it will result of somewhat of an lag if you are waiting to see that is this voltage spike bootstrapping cycle or an real pump control demand. Will this result an real world meningful lag, I can't really say (this doesn't affect only w v0.4 but current system also).
 
-Benefits for this hardware design would be reduced complexity and part count. This is likely to result in simpler software as well.
+Benefits for this hardware design would be reduced complexity and part count. This is likely to result in simpler software as well. Relays switching noise should be reduced. Overall these are quite minor improvements.
 
 In older HW v0.2 I have used (tested) relay or N-channel MOSFET for controlling the LOW side BLS signal line (S_BLS). I somehow prefer the use of NC-relay, but maybe tranfer to some other type of solution in the future. Dual channel MOSFET IC maybe or something.
 
