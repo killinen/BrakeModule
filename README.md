@@ -7,7 +7,7 @@ This project was created to solve the need for a MY99 BMW 540i (E39) to be able 
 
 ### Disclaimer
 
-The software and hardware of this project has been done by fellow that have no knowledge of anykind on automotive, software or hardware developing stuff nor electrical engineering. So if some ever implements this, keep in mind that there is some change that the BrakeModule will behave unwantedly or will damage your cars electrical system! If you have better knowledge than I, please contribute on developing this.
+The software and hardware of this project has been done by fellow that have no knowledge of anykind on automotive, software or hardware developing stuff nor electrical engineering. I just like to get things done. So if some ever implements this, keep in mind that there is some change that the BrakeModule will behave unwantedly or will damage your cars electrical system! If you have better knowledge than I, please contribute on developing this.
 
 ---
 
@@ -174,6 +174,8 @@ The BrakeModule is used to simulate the cruise control system of a TOYOTA Coroll
 If DEBUG is #defined in software you can control the board via serial (look at the readSerial() function) + some debugging messages are shown.
 
 If FAN_CTRL is #defined in software and temperature over 45 degrees is measured by TMP36 (not implemented on v0.3 code), small NPN transistor is pulled low which is conncted to FAN connector (designed for cooling the MOSFET). Also if temperature exceeds 80 degrees, brake module will disable OPENPILOT and wont engage until temperature is below that (this this shabang might is not nessaccary at least haven't been for me).
+
+If FAN_CTRL is #defined in the software and the temperature measured by the TMP36 sensor (not implemented in the v0.3 code) exceeds 45 degrees, a small NPN transistor is pulled low, which is connected to the FAN connector (designed to cool the MOSFET). Additionally, if the temperature exceeds 80 degrees, the BrakeModule will disable OPENPILOT and prevent it from engaging until the temperature falls below that threshold (this shabang might is not nessaccary at least haven't been for me).
 
  <!--- For discussion of "old" cars impelementation of OPENPILOT join discord: discord server link here. ---> 
  
