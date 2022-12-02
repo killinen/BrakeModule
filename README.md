@@ -107,6 +107,19 @@ In E39 the DME control unit evaluates the signals for the purpose of registering
   <img src="Pics/BLS_logik.PNG?raw=true">
 </p>
 
+The BrakeModule (as well OPENPILOT) is connected to BMW's CAN bus which have following modules attached:
+- Instrument Cluster
+- LEW (steering angle sensor)
+- DSCIII (BOSCH ABS control module)
+- DME (engine control module)
+
+Whole bus topology of my car:
+<p align="center">
+  <img src="Pics/Bus Topology I -K-M-P-Can-Diagnostic.jpg?raw=true">
+</p>
+
+The CAN bus used here, should NOT be confused to diagnostic bus which is exposed in OBD ports.
+
 ---
 
 ## BrakeModule HW
