@@ -13,7 +13,7 @@ The software and hardware of this project has been done by fellow that have no k
 
 ## BACKROUND
 
-This module has been developed with use of car which uses BOSCH ABS 5.7 Dynamic Stability Control system 3 (DSCIII). This system is used on several different car manufacturers so it could possibly be used on those with software modification. The system description here is what I have found on my car, yours may vary. I also make a lot of assumptions of how the system works on based on what I have seen, but I don't have near close to 100% certainty of it. There might also be a change this could be used on BOSCH 5.3 system, if DSCIII (or similar) is implemented.
+This module has been designed for use with a car equipped with the BOSCH ABS 5.7 Dynamic Stability Control system 3 (DSCIII). It is possible that this module could be adapted for use with other cars that use this system, but modifications to the software may be required. The description of the system provided here is based on the author's observations and assumptions, and may not be accurate for all cars that use this system. There might also be a change this could be used on BOSCH 5.3 system, if DSCIII (or similar) is implemented.
 
 List of cars that use BOSCH 5.7 system found on the internet.
 
