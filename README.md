@@ -156,7 +156,7 @@ Speed value (car_speed) is read on message 0x153 and send to OPENPILOT as ACC se
 
 <!--- Filtering of CAN messages are used to give better change to not to lose wanted messages. After filtering measured capture rate of CAN messages was 99.97 % in 1 minute test with Arduino Nano, with LGT8F328P little bit better. Average loop time per 1 million loopcycles was ~31 uS w Nano (measured with millis() function).---> 
 
-BrakeModule is used to emulate TOYOTA corollas cruise controller because this is the car which is used on my OPENPILOT fork. This implementation is shown as sent data sent in 0x1D2 and 0x1D3 CAN messages which are originally used by TOYOTA cruise controller. The use of TOYOTA in OP is from legacy reasons because the first guy that used OP on older cars implement it on TOYOTA Celica and my code is just revision of that.
+The BrakeModule is used to simulate the cruise control system of a TOYOTA Corolla because the OPENPILOT fork identifies the car as a TOYOTA. As a result, data is sent in 0x1D2 and 0x1D3 CAN messages, which are typically used by the cruise control system of TOYOTA vehicles. The use of TOYOTA in OPENPILOT is due to legacy reasons, as the first person to use OPENPILOT on an older car implemented it on a TOYOTA Celica. My code is simply a revised version of that original implementation.
 
 If DEBUG is #defined in software you can control the board via serial (look at the readSerial() function) + some debugging messages are shown.
 
