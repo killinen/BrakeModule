@@ -115,6 +115,7 @@ The BrakeModule has three main functionalities:
 1. Three relays that switch the charge pump in line with the DSC system or the BrakeModule.
 2. A power MOSFET that controls the charge pump.
 3. A temperature measurement system to monitor the power MOSFET temperature, along with a FAN to cool it down.
+
 Additionally, the BrakeModule uses a CAN module for communication and a voltage divider to measure the DSC+ line voltage and the car's brake light switch.
 
 The board size is 110x82mm and it contains.
