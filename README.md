@@ -11,7 +11,7 @@ The software and hardware of this project has been done by fellow that have no k
 
 ---
 
-## BACKROUND
+## Backround
 
 This module has been designed for use with a car equipped with the BOSCH ABS 5.7 Dynamic Stability Control system 3 (DSCIII). It is possible that this module could be adapted for use with other cars that use this system, but modifications to the software may be required. The description of the system provided here is based on the author's observations and assumptions, and may not be accurate for all cars that use this system. There might also be a change this could be used on BOSCH 5.3 system, if DSCIII (or similar) is implemented.
 
