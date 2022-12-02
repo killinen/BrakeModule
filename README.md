@@ -191,29 +191,31 @@ Ditch the pump side relays and make same kinda MOSFET configuration that in the 
 
 The unfortunate thing in these voltage spikes are IMO that if you would like to eliminate the change of charge pump not running when DSC module is demanding it but BrakeModule controlling the pump it will result of somewhat of an lag if you are waiting to see that is this voltage spike bootstrapping cycle or an real pump control demand. Will this result an real world meningful lag, I can't really say (this doesn't affect only w v0.4 but current system also).
 
+Benefits for this hardware design would be reduced complexity and part count. This is likely to result in simpler software as well.
+
 In older HW v0.2 I have used (tested) relay or N-channel MOSFET for controlling the LOW side BLS signal line (S_BLS). I somehow prefer the use of NC-relay, but maybe tranfer to some other type of solution in the future. Dual channel MOSFET IC maybe or something.
 
 ---
 
 ### Problems that I know of
-What I have understand there are standards for automotive hardware and software design and this does project does not follow any of those.
+What I have understand there are standards and guidelines for automotive hardware and software design, this project does not follow any of those.
 
-The main worry point that I have is that if an stability control event should happen on the same time that BrakeModule is controlling the charge pump, there is non trivial change that the stability control system won't funtion as planned. This said I seen haven't had any problematic events yet, but understand that it would need much more testing to be confident that it won't happen. This is an issue that I would like to test in the future.
+My main concern is that if a stability control event occurs while the BrakeModule is controlling the charge pump, there is a non-trivial chance that the stability control system will not function as intended. I have not yet experienced any problems with this, but I understand that more testing is needed to be confident that this will not happen. I plan to conduct further testing to address this concern in the future.
 
-If you damage the ABS control unit it is quite hard to repair and if bought new also quite pricey. I give no promises that using the BrakeModule won't brake anything. Knock on wood, I haven't broke my unit even though it has had quite a bit of rough love. Thanks to German engineer.
+If the ABS control unit is damaged, it can be difficult and costly to repair. I cannot guarantee that using the BrakeModule will not cause any damage, but so far, I have not experienced any problems with my unit, even though it has had quite a bit of rough love. This the quality of the German engineering ;)
 
-I don't know what is the max capability of the charge pump eg. if you run it too long can it overheat or something. The software does not restrict this at all. I have run the charge pump quite alot in red lights in Nordic climate (best outside 25-30°C), and at least yet it hasn't failed. In hotter days I've seen decrease in max brake pressure that pump can yiels, which assumably is result of brakefluid getting hot.
+I am not aware of the maximum capabilities of the charge pump, such as whether it can overheat and brake if run for too long. The software does not have any restrictions in place to prevent this. I have run the charge pump for extended periods in red lights in Nordic summer (best outside 25-30°C), and so far it has not failed. However, on hotter days, I have observed a decrease in the maximum brake pressure that the pump can produce, which I assume is due to the brake fluid getting hot.
 
-If brake pedal is pressed hard and BrakeModule is controlling the pump and switched back to "normal mode", DSC will give an error (this might be solved).
+If brake pedal is pressed hard and BrakeModule is controlling the pump and switched back to "normal mode", BOSCH module will give an error (this might be solved).
 
-Good design would prolly be to install the module on a professional case so components wouldn't be exposed with integrated heat dispersion.
+A well-designed approach to installing the module would likely involve using a professional case to protect the components and provide integrated heat dispersion. This would prevent the components from being exposed and improve the overall performance and reliability of the system.
 
 ---
 
 ### Someone might think
 
-That wouldn't it be best if you could control the DSCIII control module via CAN to use the charge pump. Yes it prolly would, but I don't have knowledge how to do it. I think this could be feaseble because this same unit is used with ACC systems and the only way I can think of is to apply the brakes is to use the charge pump.
+That wouldn't it be best if you could control the BOSCH control module using CAN to access the charge pump, but I do not have the knowledge or expertise to do so. This approach may be feasible because the same unit is used with ACC systems, and the only way that I can imagine to apply the brakes is to use the charge pump.
 
-The benefits in my mind of the Brake Module to latter is to have full control of braking (my undestanding is that OEM system won't brake below certain speed in ACC mode). Scalability is also benefit because you probably wont need to reverse engineer all the possible messages/programs that are implemented on different car brands and models. And lastly this is more fun :)
+The benefits in my mind of the BrakeModule to latter is to have full control of braking (my undestanding is that OEM system won't brake below certain speed in ACC mode). Scalability is also benefit because you probably won't need to reverse engineer all the possible messages/programs that are implemented on different car brands and models. And lastly this is more fun :)
 
 ---
