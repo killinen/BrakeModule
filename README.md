@@ -138,7 +138,8 @@ The board size is 110x82mm and it contains.
 - TC1413N DIP8 mosfet driver.
 - POWERPAK SO-8L MOSFET.
 - 12V to 5V buck converter module.
-- BS250P for driving the brakelight switch high side. 
+- BS250P for driving the brakelight switch high side.
+- HK19F-DC12V-SHG relay for driving the brakelight switch low side.
 - TMP36 temperature sensor for MOSFET. 
 - SOT23-NPN transistors for common switching purposes, eg. possible fan.
 - TO92-NPN transistors for driving the SMIH-12VDC-SL-C relays
