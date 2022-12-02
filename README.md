@@ -201,7 +201,7 @@ If I have the insipiration to make of BM v0.3.3 I would:
 
 ### Possible v0.4
 
-Ditch the pump side relays and make same kinda MOSFET configuration that in the DSC module. Then sense the DSC wires and drive the pump accordingly. Below is picture that shows voltage in millivolts (DSC_VOLTAGE) measured from DSC+ wire. There seems to be somekinda bootstrapping cycle and somehow voltage is increased when the pump is running driven by the BrakeModule. The pump running can be observed from the PWM value (2047 = 100% dutycycle). Brakepressure (bar) is shown for reference. The pressure reading wo pump been driven is me pressing the brake pedal :)
+It may be possible to ditch the pump-side relays and use a similar MOSFET configuration as in the DSC module. This would allow the system to sense the DSC wires and drive the pump accordingly. The below picture shows the voltage in millivolts (DSC_VOLTAGE) measured from the DSC+ wire. There appears to be some sort of bootstrapping cycle, and the voltage is increased when the pump is running and driven by the BrakeModule. The running of the pump can be observed from the PWM value (2047 = 100% duty cycle), and the brake pressure (in bars) is shown for reference. The pressure reading without the pump being driven is the result of me pressing the brake pedal :)
 
 <p align="center">
   <img src="Pics/DSC_VOLT.png?raw=true">
