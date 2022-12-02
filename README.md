@@ -159,7 +159,7 @@ BrakeModule is used to emulate TOYOTA corollas cruise controller because this is
 
 If DEBUG is #defined in software you can control the board via serial (look at the readSerial() function) + some debugging messages are shown.
 
-If #FAN_CTRL is defined in software and temperature over 45 degrees is measured by TMP36 (not implemented on v0.3 code), small NPN transistor is pulled low which is conncted to FAN connector (designed for cooling the MOSFET). Also if temperature exceeds 80 degrees, brake module will disable OPENPILOT and wont engage until temperature is below that (this this shabang might is not nessaccary at least haven't been for me).
+If FAN_CTRL is #defined in software and temperature over 45 degrees is measured by TMP36 (not implemented on v0.3 code), small NPN transistor is pulled low which is conncted to FAN connector (designed for cooling the MOSFET). Also if temperature exceeds 80 degrees, brake module will disable OPENPILOT and wont engage until temperature is below that (this this shabang might is not nessaccary at least haven't been for me).
 
  <!--- For discussion of "old" cars impelementation of OPENPILOT join discord: discord server link here. ---> 
  
