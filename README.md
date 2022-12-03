@@ -27,7 +27,7 @@ The BrakeModule has been designed to receive brake request values from OPENPILOT
 
 Video introducing OPENPILOT.
 
-[![](https://img.youtube.com/vi/NmBfgOanCyk/0.jpg)](https://youtu.be/NmBfgOanCyk)
+[![](https://i3.ytimg.com/vi/NmBfgOanCyk/maxresdefault.jpg)](https://youtu.be/NmBfgOanCyk)
 
 At the moment, my implementation of the OPENPILOT only utilizes vision-based ACC (no radar) with stop and go capability. Lateral control is a work in progress. The top left of the screen shows the set speed of 87 km/h, and the top center shows the current speed as reduced by the vision system that detects the distance, speed, and acceleration/deceleration of the lead car.
 
