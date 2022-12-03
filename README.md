@@ -23,7 +23,7 @@ List of cars that use BOSCH 5.7 system found on the internet.
 
 I'm not sure if these are compatible cars, meaning that does these have charge pump that needs to be in place to brake the car.
 
-The BrakeModule has been designed to receive brake request values from OPENPILOT via the CAN bus. OPENPILOT is an open source driver assistance system that offers Automated Lane Centering and Adaptive Cruise Control for over 200 supported car makes and models. To function properly, OPENPILOT needs to be able to control the longitudinal (gas and brake) and lateral (steering) movements of the car using the CAN bus. For more information, see https://github.com/commaai/openpilot.
+The BrakeModule has been designed to receive brake request values from OPENPILOT via the CAN bus. OPENPILOT is an open source driver assistance system that offers Automated Lane Centering and Adaptive Cruise Control for over 200 supported car makes and models. To function properly, OPENPILOT needs to be able to control the longitudinal (gas and brake) and lateral (steering) movements of the car using the CAN bus. For more information, see https://comma.ai/ and https://github.com/commaai/openpilot.
 
 Video introducing OPENPILOT.
 
