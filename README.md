@@ -34,7 +34,7 @@ At the moment, my implementation of the OPENPILOT only utilizes vision-based ACC
 
 https://user-images.githubusercontent.com/37126045/204889544-91e67136-c381-4791-b589-27530b2b94af.mp4
 
-The following video demonstrates the performance of OPENPILOT and Brakemodule together. The pink graph shows brake pressure in bar, the purple graph shows gas pedal position, the blue graph shows car speed in km/h, and the turquoise graph shows the distance to the lead car in meters.
+The following video demonstrates the performance of OPENPILOT and Brakemodule together. The pink graph shows brake pressure in bar, the purple graph shows gas pedal position (contorlled by OPENPILOT, not the driver), the blue graph shows car speed in km/h, and the turquoise graph shows the distance to the lead car in meters.
 
 https://user-images.githubusercontent.com/37126045/205499143-c1d0632b-0707-4776-ab54-dc6cb979e526.mp4
 
@@ -73,7 +73,7 @@ Handwritten schematic of the driving circuit of the charge pump.
   <img src="Pics/PumpSch.PNG?raw=true">
 </p>
 
-If someone want's to deep dive closer on Bosch DSC 5.7 ABS Module Diagnosis and Repair read this great post: https://www.bimmerfest.com/threads/bosch-dsc-5-7-abs-module-diagnosis-and-repair.822139/#post-8854110 (the pics are stolen from it).
+If someone want's to deep dive on Bosch DSC 5.7 ABS Module Diagnosis and Repair read this great post: https://www.bimmerfest.com/threads/bosch-dsc-5-7-abs-module-diagnosis-and-repair.822139/#post-8854110 (the pics are stolen from it).
 
 Further knowledge on how BOSCH 5.7/DSCIII works, look at https://github.com/killinen/BrakeModule/blob/main/dsc_system.pdf in the repo.
 
@@ -239,5 +239,7 @@ A well-designed approach to installing the module would likely involve using a p
 That wouldn't it be best if you could control the BOSCH control module using CAN to access the charge pump, but I do not have the knowledge or expertise to do so. This approach may be feasible because the same unit is used with ACC systems, and the only way that I can imagine to apply the brakes is to use the charge pump.
 
 The benefits in my mind of the BrakeModule to latter is to have full control of braking (my undestanding is that OEM system won't brake below certain speed in ACC mode). Scalability is also benefit because you probably won't need to reverse engineer all the possible messages/programs that are implemented on different car brands and models. And lastly this is more fun :)
+
+If you find this project interesting, useful, or cool, I would appreciate it if you could give it a star. This is my first public project, and I would like to know if publishing this type of content provides value to people. By giving it a star, you can help me gauge the interest in this project and determine whether I should continue publishing similar content in the future. Thank you!
 
 ---
