@@ -34,7 +34,7 @@ At the moment, my implementation of the OPENPILOT only utilizes vision-based ACC
 
 https://user-images.githubusercontent.com/37126045/204889544-91e67136-c381-4791-b589-27530b2b94af.mp4
 
-The following video demonstrates the performance of OPENPILOT and Brakemodule together. The pink graph shows brake pressure in bar, the purple graph shows gas pedal position (contorlled by OPENPILOT, not the driver), the blue graph shows car speed in km/h, and the turquoise graph shows the distance to the lead car in meters.
+The following video demonstrates the performance of OPENPILOT and BrakeModule together. The pink graph shows brake pressure in bar, the purple graph shows gas pedal position (contorlled by OPENPILOT, not the driver), the blue graph shows car speed in km/h, and the turquoise graph shows the distance to the lead car in meters.
 
 https://user-images.githubusercontent.com/37126045/205499143-c1d0632b-0707-4776-ab54-dc6cb979e526.mp4
 
