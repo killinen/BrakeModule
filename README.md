@@ -64,7 +64,7 @@ Picture of BOSCH 5.7 with DSCIII.
 By controlling the charge pump, which is responsible for increasing the pressure in the brake circuit (10-15 bar), we can also control the car's deceleration (braking). The charge pump will increase brake pressure on front and rear axles.
 
 <p align="left">
-  <img src="Pics/Charge_pump_operation.PNG?raw=true">
+  <img src="Pics/Charge_pump_operation.png?raw=true">
 </p>
 
 The charge pump is controlled by two N-channel MOSFETs inside the control module, in a half-bridge configuration.
