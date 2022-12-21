@@ -8,6 +8,8 @@ Brakemodule code has passed the Cppcheck and MISRA complience is WIP. Inside Bra
 ### General safety filosophy
 BrakeModule triest to act so that it will minimize the affect of cars original ABS/DSC system functionality/safety features.
 
+TODO: Make some systematic analysis of logik or component failures and how those affect BrakeModule/rest of the system.
+
 ### Software design
 Here text what safety has tried to be implemented in software
 
