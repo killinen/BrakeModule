@@ -1,14 +1,32 @@
-# Advisory: casting from void pointer to type pointer is ok. Done by STM libraries as well
+#All Advisory rules are suppressed:
+misra-c2012-1.2
+misra-c2012-2.3
+misra-c2012-2.4
+misra-c2012-2.5
+misra-c2012-2.6
+misra-c2012-2.7
+misra-c2012-4.2
+misra-c2012-5.9
+misra-c2012-8.7
+misra-c2012-8.9
+misra-c2012-8.13
+misra-c2012-10.5
 misra-c2012-11.4
-# Advisory: casting from void pointer to type pointer is ok. Done by STM libraries as well
 misra-c2012-11.5
-# Advisory: as stated in the Misra document, use of goto statements in accordance to 15.2 and 15.3 is ok
+misra-c2012-12.1
+misra-c2012-12.3
+misra-c2012-12.4
+misra-c2012-13.3
+misra-c2012-13.4
 misra-c2012-15.1
-# Advisory - A function should only have a single return point
+misra-c2012-15.4
 misra-c2012-15.5
-# Advisory: union types can be used
+misra-c2012-17.5
+misra-c2012-17.8
+misra-c2012-18.4
+misra-c2012-18.5
 misra-c2012-19.2
-# Advisory: The # and ## preprocessor operators should not be used
+misra-c2012-20.1
+misra-c2012-20.5
 misra-c2012-20.10
-# Required: it's ok re-defining potentially reserved Macro names. Not likely to cause confusion
-misra-c2012-21.1
+misra-c2012-21.12
