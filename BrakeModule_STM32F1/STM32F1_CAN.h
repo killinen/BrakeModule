@@ -7,6 +7,8 @@
 
 #define DEBUG 0
 
+bool fail_flag = false;                // Flag for any failure that would prevent OPENPILOT to engage and BrakeModule to turn ON
+
 /* Symbolic names for bit rate of CAN message                                */
 typedef enum {CAN_50KBPS, CAN_100KBPS, CAN_125KBPS, CAN_250KBPS, CAN_500KBPS, CAN_1000KBPS} BITRATE;
 
