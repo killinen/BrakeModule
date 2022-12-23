@@ -1,14 +1,17 @@
 ## Safety aspect
 
-In critical systems there should be rigorous code testing and this attempt to obey to this principle.
-BrakeModule code has been checked with Cppcheck and misra addon. Cppcheck is a static analysis tool for C/C++ code. It provides unique code analysis to detect bugs and focuses on detecting undefined behaviour and dangerous coding constructs.
-Misra addon is layer on top of Cppchck where MISRA-C:2012 standard rule checking is done to the code. There atleast should not be any "required" rule errors.
-Brakemodule code has passed the Cppcheck and MISRA complience is WIP. Inside Brakemodule software folder there is shell script that will conduct both tests. During compiling the compile warnings are set to ```-warnings=all```.
+In critical systems, it is important to adhere to the principle of rigorous code testing. The BrakeModule code has undergone this process through the use of static analysis tools such as Cppcheck and the Misra addon.
+
+Cppcheck is a static analysis tool for C/C++ code that is designed to detect bugs and undefined behavior. It has been used to check the BrakeModule code for any issues.
+
+The Misra addon is a layer on top of Cppcheck that performs rule checking according to the MISRA-C:2012 standard. <!---The BrakeModule code has passed the Cppcheck test and is currently being checked for MISRA compliance.---> A shell script is available in the BrakeModule software folder to run both tests.
+
+During compilation, the ```-warnings=all``` flag is also set to highlight any potential problems.
 
 ### General safety filosophy
-BrakeModule triest to act so that it will minimize the affect of cars original ABS/DSC system functionality/safety features.
+The BrakeModule aims to minimize the impact on the original ABS/DSC system's functionality and safety features.
 
-TODO: Make some systematic analysis of logik or component failures and how those affect BrakeModule/rest of the system.
+TODO: Conduct a systematic analysis of logic or component failures and their effect on the BrakeModule and the rest of the system.
 
 ### Software design
 Here text what safety has tried to be implemented in software
@@ -17,4 +20,4 @@ Here text what safety has tried to be implemented in software
 ### Hardware design
 Here text what safety has tried to be implemented in hardware
 
-Even tho there has been done steps to improve safety it does not mean this is proved to be safe.
+It is important to note that these safety measures do not guarantee the safety of the BrakeModule. Further analysis may be necessary to fully assess the system's safety.
