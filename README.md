@@ -7,7 +7,7 @@ This project was created to solve the need for a MY99 BMW 540i (E39) to be able 
 
 ### Disclaimer
 
-The software and hardware of this project has been done by fellow that have no knowledge of anykind on automotive, software or hardware developing stuff nor electrical engineering. I just like to get things done. So if some ever implements this, keep in mind that there is some change that the BrakeModule will behave unwantedly or will damage your cars electrical system! If you have better knowledge than I, please contribute on developing this.
+The software and hardware of this project has been done by fellow that have no knowledge of any kind on automotive, software or hardware developing stuff nor electrical engineering. I just like to get things done. So if some ever implements this, keep in mind that there is some change that the BrakeModule will behave unwantedly or will damage your cars electrical system! If you have better knowledge than I, please contribute on developing this.
 
 ---
 
@@ -34,7 +34,7 @@ At the moment, my implementation of the OPENPILOT only utilizes vision-based ACC
 
 https://user-images.githubusercontent.com/37126045/204889544-91e67136-c381-4791-b589-27530b2b94af.mp4
 
-The following video demonstrates the performance of OPENPILOT and BrakeModule together. The pink graph shows brake pressure in bar, the purple graph shows gas pedal position (contorlled by OPENPILOT, not the driver), the blue graph shows car speed in km/h, and the turquoise graph shows the distance to the lead car in meters.
+The following video demonstrates the performance of OPENPILOT and BrakeModule together. The pink graph shows brake pressure in bar, the purple graph shows gas pedal position (controlled by OPENPILOT, not the driver), the blue graph shows car speed in km/h, and the turquoise graph shows the distance to the lead car in meters.
 
 https://user-images.githubusercontent.com/37126045/205499143-c1d0632b-0707-4776-ab54-dc6cb979e526.mp4
 
@@ -44,9 +44,9 @@ The BrakeModule could potentially be used with other adaptive cruise control sys
 
 ## Working principle
 ### Abstract of BOSCH 5.7/DSCIII system
-The system can be roughly devided into few subsystems: 
+The system can be roughly divided into few subsystems: 
 - control module (ECU) that is responsible all of the logic and electrical stuff
-- valves that control the brakefluid flow
+- valves that control the brake fluid flow
 - ABS relief pump
 - charge pump (also known as pre-charge pump)
 - sensors that monitor the system and the trajectory of the car. 
@@ -173,7 +173,7 @@ Picture of BrakeModule inside 3D-printed case.
 
 The software has been developed for the STM32F103 chip using the Arduino IDE, with some STM32Cube HAL functionality added. The previous version 0.2 of the board was based on the LGT8F328P board, which was designed to be compatible with the Arduino Nano, so there may be some legacy elements from that version (the old firmware is shown as BrakeModule_02.ino in the repository).
 
-Normally he charge pump is connected to the BOSCH control module, with the relays in the normally-closed mode. However, when a braking demand is detected in the 0x343 CAN message (BRK_CMD) from OPENPILOT, the BOSCH module is disconnected from the pump and the pump is instead controlled by a 15 kHz PWM signal from the power MOSFET, with the relays switched to the OFF position from the normally-closed mode. Additionally, the brake light signal lines are driven to produce correct HIGH (S_BLTS) and LOW (S_BLS) signals, indicating to the car that the brake pedal has been pressed. When BRK_CMD demand is no longer detected, first 12V line and ground (PWR MOSFET) will be disconnected from the pump and after 600 ms BOSCH control module is switch back inline with the pump. Also brakelight switch is turned OFF. This delay is because if the transition from pump activated with BrakeModule back to DSC module is too fast, BOSCH module will give error code. I think this is caused of pump still rotating (generating voltage to pump wires) and you will connect the pump to BOSCH module, modules feedback lines detects voltage at the pump when it shouldn't and gives an error or brake pressure is seen in brake circuit and brakelight switch is turned off.
+Normally he charge pump is connected to the BOSCH control module, with the relays in the normally-closed mode. However, when a braking demand is detected in the 0x343 CAN message (BRK_CMD) from OPENPILOT, the BOSCH module is disconnected from the pump and the pump is instead controlled by a 15 kHz PWM signal from the power MOSFET, with the relays switched to the OFF position from the normally-closed mode. Additionally, the brake light signal lines are driven to produce correct HIGH (S_BLTS) and LOW (S_BLS) signals, indicating to the car that the brake pedal has been pressed. When BRK_CMD demand is no longer detected, first 12V line and ground (PWR MOSFET) will be disconnected from the pump and after 600 ms BOSCH control module is switch back inline with the pump. Also brake light switch is turned OFF. This delay is because if the transition from pump activated with BrakeModule back to DSC module is too fast, BOSCH module will give error code. I think this is caused of pump still rotating (generating voltage to pump wires) and you will connect the pump to BOSCH module, modules feedback lines detects voltage at the pump when it shouldn't and gives an error or brake pressure is seen in brake circuit and brake light switch is turned off.
 
 The speed value (car_speed) is read from message 0x153 and sent to OPENPILOT as the ACC set speed when OPENPILOT is engaged (set_speed).
 <!---Following is depracated: The brake pedal state is read from message 0x329 (BRK_ST) and sent to OPENPILOT when there is no braking demand and the pedal press is detected in order to disengage OPENPILOT (BRK_ST_OP).--->
@@ -185,9 +185,9 @@ The BrakeModule is used to simulate the cruise control system of a TOYOTA Coroll
 
 If DEBUG is #defined in software you can control the board via serial (look at the readSerial() function) + some debugging messages are shown.
 
-If FAN_CTRL is #defined in software and temperature over 45 degrees is measured by TMP36 (not implemented on v0.3 code), small NPN transistor is pulled low which is conncted to FAN connector (designed for cooling the MOSFET). Also if temperature exceeds 80 degrees, brake module will disable OPENPILOT and wont engage until temperature is below that (this this shabang might is not nessaccary at least haven't been for me).
+If FAN_CTRL is #defined in software and temperature over 45 degrees is measured by TMP36 (not implemented on v0.3 code), small NPN transistor is pulled low which is connected to FAN connector (designed for cooling the MOSFET). Also if temperature exceeds 80 degrees, brake module will disable OPENPILOT and wont engage until temperature is below that (this this shabang might is not necessary at least haven't been for me).
 
-If FAN_CTRL is #defined in the software and the temperature measured by the TMP36 sensor (not implemented in the v0.3 code) exceeds 45 degrees, a small NPN transistor is pulled low, which is connected to the FAN connector (designed to cool the MOSFET). Additionally, if the temperature exceeds 80 degrees, the BrakeModule will disable OPENPILOT and prevent it from engaging until the temperature falls below that threshold (this shabang might is not nessaccary at least haven't been for me).
+If FAN_CTRL is #defined in the software and the temperature measured by the TMP36 sensor (not implemented in the v0.3 code) exceeds 45 degrees, a small NPN transistor is pulled low, which is connected to the FAN connector (designed to cool the MOSFET). Additionally, if the temperature exceeds 80 degrees, the BrakeModule will disable OPENPILOT and prevent it from engaging until the temperature falls below that threshold (this shabang might is not necessary at least haven't been for me).
 
  <!--- For discussion of "old" cars impelementation of OPENPILOT join discord: discord server link here. ---> 
  
@@ -200,12 +200,12 @@ Some of the decoded CAN messages that is on E39 CAN bus can be found here: https
 
 ## Next iteration
 
-If I have the insipiration to make of BM v0.3.3 I would: 
+If I have the inspiration to make of BM v0.3.3 I would: 
 - Fix HW bugs (funny I found few). 
 - Reduce part count (simplify).
 - Get rid of extra DSC voltage divider circuit in the upper right corner of PCB (useless).
 - Maybe add (working) brake light switch low side sensing (redundancy).
-- Maybe 4 layer PCB desing (could lower the power tracing resistance?)
+- Maybe 4 layer PCB design (could lower the power tracing resistance?)
 - Maybe use of different kind of power MOSFET (is the footprint right).
 
 
@@ -217,11 +217,11 @@ It may be possible to ditch the pump-side relays and use a similar MOSFET config
   <img src="Pics/DSC_VOLT.png?raw=true">
 </p>
 
-The unfortunate thing in these voltage spikes are IMO that if you would like to eliminate the change of charge pump not running when DSC module is demanding it but BrakeModule controlling the pump it will result of somewhat of an lag if you are waiting to see that is this voltage spike bootstrapping cycle or an real pump control demand. Will this result an real world meningful lag, I can't really say (this doesn't affect only w v0.4 but current system also).
+The unfortunate thing in these voltage spikes are IMO that if you would like to eliminate the change of charge pump not running when DSC module is demanding it but BrakeModule controlling the pump it will result of somewhat of an lag if you are waiting to see that is this voltage spike bootstrapping cycle or an real pump control demand. Will this result an real world meaningful lag, I can't really say (this doesn't affect only w v0.4 but current system also).
 
 Benefits for this hardware design would be reduced complexity and part count. This is likely to result in simpler software as well. Relays switching noise should be reduced. Overall these are quite minor improvements.
 
-In older HW v0.2 I have used (tested) relay or N-channel MOSFET for controlling the LOW side BLS signal line (S_BLS). I somehow prefer the use of NC-relay, but maybe tranfer to some other type of solution in the future. Dual channel MOSFET IC maybe or something.
+In older HW v0.2 I have used (tested) relay or N-channel MOSFET for controlling the LOW side BLS signal line (S_BLS). I somehow prefer the use of NC-relay, but maybe transfer to some other type of solution in the future. Dual channel MOSFET IC maybe or something.
 
 ---
 
@@ -244,8 +244,6 @@ A well-designed approach to installing the module would likely involve using a p
 
 That wouldn't it be best if you could control the BOSCH control module using CAN to access the charge pump, but I do not have the knowledge or expertise to do so. This approach may be feasible because the same unit is used with ACC systems, and the only way that I can imagine to apply the brakes is to use the charge pump.
 
-The benefits in my mind of the BrakeModule to latter is to have full control of braking (my undestanding is that OEM system won't brake below certain speed in ACC mode). Scalability is also benefit because you probably won't need to reverse engineer all the possible messages/programs that are implemented on different car brands and models. And lastly this is more fun :)
-
-If you find this project interesting, useful, or cool, I would appreciate it if you could give it a star. This is my first public project, and I would like to know if publishing this type of content provides value to people. By giving it a star, you can help me gauge the interest in this project and determine whether I should continue publishing similar content in the future. Thank you!
+The benefits in my mind of the BrakeModule to latter is to have full control of braking (my understanding is that OEM system won't brake below certain speed in ACC mode). Scalability is also benefit because you probably won't need to reverse engineer all the possible messages/programs that are implemented on different car brands and models. And lastly this is more fun :)
 
 ---

@@ -7,7 +7,8 @@
             "compilerArgs": [
                 "-mcpu=cortex-m3",
                 "-mthumb",
-                "-w",
+                "-Wall",
+                "-Wextra",
                 "-std=gnu++14",
                 "-ffunction-sections",
                 "-fdata-sections",

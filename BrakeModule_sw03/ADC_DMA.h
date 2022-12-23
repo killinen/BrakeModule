@@ -2,7 +2,7 @@
 // Code from https://www.stm32duino.com/viewtopic.php?f=41&t=110
  
 /* Private define ------------------------------------------------------------*/
-#define ADC_BUFFER_SIZE                ((uint32_t) 3)     /* Size of array containing ADC converted values */
+#define ADC_BUFFER_SIZE                ((uint32_t) 5)     /* Size of array containing ADC converted values */
 #define RANGE_12BITS                   ((uint32_t) 4095)    /* Max value with a full range of 12 bits */
 
 /* Private variables ---------------------------------------------------------*/
@@ -177,7 +177,7 @@ static void ADC_Config(void)
   AdcHandle.Init.DiscontinuousConvMode = DISABLE;
   AdcHandle.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   AdcHandle.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  AdcHandle.Init.NbrOfConversion = 3;
+  AdcHandle.Init.NbrOfConversion = 5;
   //AdcHandle.Init.NbrOfConversion = 1;
 
   if (HAL_ADC_Init(&AdcHandle) != HAL_OK)
@@ -197,6 +197,7 @@ static void ADC_Config(void)
   */
   sConfig.Channel = ADC_CHANNEL_5;
   sConfig.Rank = ADC_REGULAR_RANK_2;
+  sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
   if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -205,6 +206,25 @@ static void ADC_Config(void)
   */
   sConfig.Channel = ADC_CHANNEL_6;
   sConfig.Rank = ADC_REGULAR_RANK_3;
+  sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
+  if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_VREFINT;
+  sConfig.Rank = ADC_REGULAR_RANK_4;
+  sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
+  if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_TEMPSENSOR;
+  sConfig.Rank = ADC_REGULAR_RANK_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
   if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
   {
     Error_Handler();

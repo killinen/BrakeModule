@@ -56,6 +56,7 @@ Remember that in STM32F103xC max currents are (datasheet p. 43):
     - CAN bus fail detection -> It is DONE in STM32F1_CAN.h and if not 0x343 is correctly received in x amount cycles
     - Brake demand boudaries -> DONE?
     - SetSpeed min/max values -> DONE?
+    - Read DSC state from CAN and if not on disengage
     - Read and compare:
       - Brake pressure from CAN
       - Brake pedal state from CAN
@@ -74,7 +75,6 @@ Remember that in STM32F103xC max currents are (datasheet p. 43):
   - Clean the AVR/STM32 parallel code
   - Test if releasetimer could be replaced with brakepressure
   - Try to find out what is wrong with TMP36 -> Defected sensor
-  - Implement internal temperature sensor (for what?)
   - Add 1M looptyme to CAN
   - Don't connect pump back to DSC if brake pressure is above certain threshold (try to prevent bug that triggers DSC DTC if braked hard and pump is running and then connects back to DSC)
   - Clean readSerial() stuff -> Done?
@@ -270,6 +270,12 @@ void loop() {
 
 // ************************************** ADC STUFF **********************************************
   
+  // ADC bit resolution is 12
+  // ADC clock is set 12 MHz
+  // Sampling time is set to 239.5 cycles per sample
+  // ADC values are read from 5 channels
+  // ADC conversion time is: ( 1.5 cycles + 239.5 cycles ) / 12 cycles per uS = 20,8 uS
+  // When all 5 has been read, one channel will update every 100,4 uS
   DSC_volt = ADCValues[0];
   BLTS_volt = ADCValues[1];
 
@@ -307,30 +313,30 @@ void loop() {
     //id = CAN_RX_msg.id;
 
   // Put needed CAN DATA into variables
-    //if (id == 0x153) {                         // Read speed from 0x153 and do some conversion
-    if (CAN_RX_msg.id == 0x153) {                         // Read speed from 0x153 and do some conversion
+    //if (id == 0x153) {                                          // Read speed from 0x153 and do some conversion
+    if (CAN_RX_msg.id == 0x153) {                               // Read speed from 0x153 and do some conversion
       //car_speed = (((CAN_RX_msg.data[2] << 3) + (CAN_RX_msg.data[1] >> 5)) * 0.25) - 2.64;
       car_speed = ((((CAN_RX_msg.data[2] & B00011111) << 3) + ((CAN_RX_msg.data[1] & B11100000) >> 5)) * 0.25) - 2.64;
       //Serial.println("0x153");
       CAN_count++;
     }
     //if (id == 0x200) {                         // Read GAS_COMMAND request value from OP
-    if (CAN_RX_msg.id == 0x200) {                         // Read GAS_COMMAND request value from OP
+    if (CAN_RX_msg.id == 0x200) {                               // Read GAS_COMMAND request value from OP
       ACC_CMD = ((CAN_RX_msg.data[0] << 8) | CAN_RX_msg.data[1]);
       //Serial.println("0x200");
       CAN_count++;
     }
     //if (id == 0x329) {
     if (CAN_RX_msg.id == 0x329) {
-      BTN_CMD = (CAN_RX_msg.data[3] & B01100000);             // &B01100000 is to make sure that other bits in the byte don't bother
-      BRK_ST = (CAN_RX_msg.data[6] & B00000001);              // Read brake pedal switch state
-      BRK_ST_CNT++;                                       // Use this for not triggering BRK_ST_OP too early after OP has stopped braking
+      BTN_CMD = (CAN_RX_msg.data[3] & B01100000);               // &B01100000 is to make sure that other bits in the byte don't bother
+      BRK_ST = (CAN_RX_msg.data[6] & B00000001);                // Read brake pedal switch state
+      BRK_ST_CNT++;                                             // Use this for not triggering BRK_ST_OP too early after OP has stopped braking
       //Serial.println("0x329");
       CAN_count++;
     }
     //if (id == 0x343) {
     if (CAN_RX_msg.id == 0x343) {
-      uint8_t cksum = can_cksum(CAN_RX_msg.data, 7, 0x343); // Calculate TOYOTA checksum
+      uint8_t cksum = can_cksum(CAN_RX_msg.data, 7, 0x343);     // Calculate TOYOTA checksum
       if (cksum == CAN_RX_msg.data[7]) {
         BRK_CMD = ((CAN_RX_msg.data[0] << 8) | CAN_RX_msg.data[1]);   // Read brake request value from OP
         BRK_CMD = max(-3500, BRK_CMD);                          // Is these values clipped already in interpolation
@@ -338,20 +344,20 @@ void loop() {
         CNL_REQ = (CAN_RX_msg.data[3] & B00000001);             // Read cancel request flag from OP
         //Serial.println("0x343");
         CAN_count++;
-        errcounter = 0;                                        // If 0x343 read and checksum OK, set error counter to 0        
+        errcounter = 0;                                         // If 0x343 read and checksum OK, set error counter to 0        
       }
       else {
-        fail_flag = true;                                     // If 0x343 checksum does not match raise fail_flag to disable OP
+        fail_flag = true;                                       // If 0x343 checksum does not match raise fail_flag to disable OP
       }
     }
     //if (id == 0x545) {
     if (CAN_RX_msg.id == 0x545) {
-      OCC = (CAN_RX_msg.data[0] & B00001000);                 // If OCC == 0x08 BMW original cruise is pre-enabled (cruise light is ON) and OP should not engage!
+      OCC = (CAN_RX_msg.data[0] & B00001000);                   // If OCC == 0x08 BMW original cruise is pre-enabled (cruise light is ON) and OP should not engage!
       //Serial.println("0x545");
       CAN_count++;
     }
     //if (id == 0x77F) {                        // Read brakepressure from 0x77F in hehtopascals
-    if (CAN_RX_msg.id == 0x77F) {                        // Read brakepressure from 0x77F in hehtopascals
+    if (CAN_RX_msg.id == 0x77F) {                               // Read brakepressure from 0x77F in hehtopascals
       //BRK_PRS = (CAN_RX_msg.data[7] << 6 | CAN_RX_msg.data[6] >> 2);
       BRK_PRS = ((CAN_RX_msg.data[7] & B00000011) << 6) | ((CAN_RX_msg.data[6] & B11111100) >> 2);
       //Serial.println("0x77F");
@@ -364,7 +370,7 @@ void loop() {
 
 // ******************************** OP LOGIK STUFF **********************************************
 
-  if ((BTN_CMD == RSM) && (BTN_PRS_FLG == false)) {                // Engage/disengage OP if resume button press is detected, BTN_PRS_FLG prevents multiple button presses
+  if ((BTN_CMD == RSM) && (BTN_PRS_FLG == false)) {            // Engage/disengage OP if resume button press is detected, BTN_PRS_FLG prevents multiple button presses
     if (CC_ST_OP == false) {                                   // If OP cruise state is false
       set_speed = car_speed;                                   // When OP CC activation is set, save car_speed to set_speed
       CNL_REQ_CNT = 0;
@@ -420,7 +426,7 @@ void loop() {
   if (errcounter == 0U) {                                        // If 0x343 msg is received, this is triggered BC errcounter is set to 0
     CNL_REQ_CNT++;
     if (CNL_REQ_CNT > 5U) {                                      // 0x343 interval is 10 ms so this is triggered every 60 ms (or is it 70 ms?)
-      if ((CNL_REQ == 1U) || (OCC == 8U)) {                           // If OP has sent cancel request or BMW original CC is pre-enabled, set TOYOTA CC ACTIVE flag to false
+      if ((CNL_REQ == 1U) || (OCC == 8U)) {                      // If OP has sent cancel request or BMW original CC is pre-enabled, set TOYOTA CC ACTIVE flag to false
         CC_ST_OP = false;
       CNL_REQ_CNT = 0;
       }
@@ -433,7 +439,6 @@ void loop() {
   // After braking event disconnect charge pump from main voltage before connecting it back to DSC-module
   if ((BRK_CMD > -30) && (BRK_FLG == true) && (RLS_FLG == false)) {  // This is when we wanna go back to normal, isolate pump from 12V (relay & MOSFET) and start releasetimer
     // digitalWrite(PA7, LOW);                 // 12V to PUMP relay LOW == disconnect
-    //OCR1A = 0;                            // Set D9 PWM duty cycle to 0% (B- LOW)   COMMENT! MAYBE disable this, could to be better for the FLYBACKING voltage to get DOWN, do it @ releasetimer
     pwr_relay_off();
     MyTim->setCaptureCompare(channel, 100, PERCENT_COMPARE_FORMAT);     // Set PWM duty cycle to 0% (B- LOW)   COMMENT! MAYBE disable this, could to be better for the FLYBACKING voltage to get DOWN, do it @ releasetimer
     timerRelease = currentMillis;         // Set timer for releasing the control back to DSC after settling time (if switch is done too fast car gives DSC error)
@@ -688,10 +693,6 @@ void pwr_relay_off()
 // BrakeModule 12V relay to charge pump OFF
 void relays_off()
 {
-  // PMP- relay (PB0)
-  // PMP+ relay to (PB1)
-  // Set BLS LOW side (PB13)
-  // Set BLS HIGH side (PB12)
   // Set pins 0, 1, 12, 13 LOW on bit set/reset register on port GPIOB
   GPIOB -> BSRR = GPIO_BSRR_BR0 | GPIO_BSRR_BR1 | GPIO_BSRR_BR12 | GPIO_BSRR_BR13;
 }
@@ -730,6 +731,18 @@ void port_lock_conf()
   HAL_GPIO_LockPin(GPIOA, GPIO_PIN_0);
   HAL_GPIO_LockPin(GPIOA, GPIO_PIN_5);
   HAL_GPIO_LockPin(GPIOA, GPIO_PIN_6);
+}
+
+// Read STM32F103 internal temperature
+int read_STM_temp(void)
+{
+float Vsense;
+float iTemp;
+float vdd;
+  vdd = 1.20 * (4096.0 / ADCValues[3]);                               // Is this input voltage compared to 1.2 reference voltage
+  Vsense = vdd/4096 * ADCValues[4];
+  iTemp = ((1.43 - Vsense ) / 0.0043) + 50;
+  return iTemp;
 }
 
 // Serial read function for DEBUGGING
