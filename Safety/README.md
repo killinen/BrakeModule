@@ -4,7 +4,9 @@ In critical systems, it is important to adhere to the principle of rigorous code
 
 Cppcheck is a static analysis tool for C/C++ code that is designed to detect bugs and undefined behavior. It has been used to check the BrakeModule code for any issues.
 
-The Misra addon is a layer on top of Cppcheck that performs rule checking according to the MISRA-C:2012 standard. <!---The BrakeModule code has passed the Cppcheck test and is currently being checked for MISRA compliance.---> A shell script is available in the BrakeModule software folder to run both tests.
+The Misra addon is a layer on top of Cppcheck that performs rule checking according to the MISRA-C:2012 standard. 
+<!---The BrakeModule code has passed the Cppcheck test and is currently being checked for MISRA compliance.---> 
+A shell script is available in the BrakeModule software folder to run both tests.
 
 During compilation, the ```-warnings=all``` flag is also set to highlight any potential problems.
 
