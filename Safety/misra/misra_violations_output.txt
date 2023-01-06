@@ -1,0 +1,10 @@
+Checking ../../BrakeModule_sw03/BrakeModule_sw03.ino ...
+Checking ../../BrakeModule_sw03/BrakeModule_sw03.ino: DEBUG...
+Checking ../../BrakeModule_sw03/BrakeModule_sw03.ino: FAN_CTRL...
+../../BrakeModule_sw03/BrakeModule_sw03.ino:2:1: style: Required - /* and // cannot used within a comment (ie No nested comments) [misra-c2012-3.1]
+/*
+^
+../../BrakeModule_sw03/STM32F1_CAN.h:61:11: style: Required - The value returned by a function having non-void return type shall be used [misra-c2012-17.7]
+    memset(out_timings, 0, sizeof(*out_timings));
+          ^
+*** MISRA violations count was 2 ***

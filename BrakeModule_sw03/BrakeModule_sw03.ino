@@ -514,6 +514,7 @@ void loop() {
     previousMillis1 = currentMillis;
 
     CAN_TX_msg.type = DATA_FRAME;
+    CAN_TX_msg.format = STANDARD_FORMAT;
 
     CAN_TX_msg.id  = 0x1D2;
     CAN_TX_msg.len = 8;
@@ -526,6 +527,8 @@ void loop() {
     CAN_TX_msg.data[6] = (CC_ST_OP << 7) & 0x80U;           // The wanted state of the OP cruise control (CC_ST_OP)
     CAN_TX_msg.data[7] = can_cksum(CAN_TX_msg.data, 7, 0x1D2);
     CANSend(&CAN_TX_msg);
+    // This is to flush data from CAN_TX_msg struct, this should avoid that data is "transferred" to other CAN sends
+    //memset(&CAN_TX_msg, 0, sizeof(CAN_TX_msg);)
   }
 
   // Send 0x1D3 msg PCM_CRUISE_2
@@ -544,6 +547,8 @@ void loop() {
     CAN_TX_msg.data[6] = DSC_volt;                           // Debugging msg, DSC+ wire voltage in milliVolts
     CAN_TX_msg.data[7] = can_cksum(CAN_TX_msg.data, 7, 0x1D3);
     CANSend(&CAN_TX_msg);
+    // This is to flush data from CAN_TX_msg struct, this should avoid that data is "transferred" to other CAN sends
+    //memset(&CAN_TX_msg, 0, sizeof(CAN_TX_msg);)
   }
 
 

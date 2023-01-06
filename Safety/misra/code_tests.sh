@@ -3,9 +3,12 @@
 # cppcheck --addon=misra.json --suppressions-list=suppressions.txt BrakeModule_STM32F1_sw03_misra.ino
 # cppcheck --addon=misra.json --suppressions-list=suppressions.txt $1
 # cppcheck --addon=./misra/misra.json --suppressions-list=./misra/suppressions.txt $1
-FILE="$(find *.ino)"
 
-# This is not used, maybe in future
+source_folder="$(find ../.. -maxdepth 1 -name 'BrakeModule*')"
+cppcheck_out_file="misra_violations_output.txt"
+FILE="$(find ${source_folder}/*.ino)"
+
+# This is not used, maybe in future, this is here to give inspiration :)
 cppcheck_parameters=( --inline-suppr
                       --language=c++
                       --addon="$script_folder/misra.json"
@@ -30,20 +33,13 @@ cppcheck_parameters=( --inline-suppr
                       "$source_folder/**.cpp")
 
 
-#printf "First make CPPCHECK for $FILE file in current folder\n"
-#sleep 5
-
-# cppcheck echo find *.ino
-#cppcheck $FILE 2> misra_violations.txt
-
-#printf "If above was performed without warnings, CPPCHECK was passed\n"
-
-#sleep 5
 
 #printf "\nThen make MISRA-c2012 check for $FILE file in current folder\n"
-printf "Make CPPCHECK and MISRA-c2012 check for $FILE file in current folder, and save the output into misra_violations.txt\n\n"
+printf "Make CPPCHECK and MISRA-c2012 check for $FILE and save the output into misra_violations_output.txt\n\n"
 sleep 5
 
-cppcheck --addon=../Safety/misra/misra.json --suppressions-list=../Safety/misra/suppressions.txt $FILE |& tee misra_violations.txt
+cppcheck --addon=misra.json --suppressions-list=suppressions.txt $FILE |& tee $cppcheck_out_file
 
-#cat misra_violations.txt
+# Count lines for Mandatory or Required rules
+error_count=`grep -i "Mandatory - \|Required - " < "$cppcheck_out_file" | wc -l`
+printf "*** MISRA violations count was $error_count ***\n" |& tee -a $cppcheck_out_file
