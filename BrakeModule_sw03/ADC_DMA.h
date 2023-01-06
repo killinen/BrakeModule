@@ -2,7 +2,7 @@
 // Code from https://www.stm32duino.com/viewtopic.php?f=41&t=110
  
 /* Private define ------------------------------------------------------------*/
-#define ADC_BUFFER_SIZE                ((uint32_t) 5)     /* Size of array containing ADC converted values */
+#define ADC_BUFFER_SIZE                ((uint32_t) 6)     /* Size of array containing ADC converted values */
 #define RANGE_12BITS                   ((uint32_t) 4095)    /* Max value with a full range of 12 bits */
 
 /* Private variables ---------------------------------------------------------*/
@@ -78,6 +78,11 @@ extern "C" void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
   GPIO_InitStruct.Pull = GPIO_PIN_0;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+  GPIO_InitStruct.Pin = ADC_CHANNEL_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_PIN_0;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
   GPIO_InitStruct.Pin = ADC_CHANNEL_5;
   GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
   GPIO_InitStruct.Pull = GPIO_PIN_5;
@@ -139,7 +144,7 @@ extern "C" void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc)
 
   /*##-2- Disable peripherals and GPIO Clocks ################################*/
   /* De-initialize GPIO pin of the selected ADC channel */
-  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0 | GPIO_PIN_5 | GPIO_PIN_6);
+  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_5 | GPIO_PIN_6);
 
   /*##-3- Disable the DMA ####################################################*/
   /* De-Initialize the DMA associated to the peripheral */
@@ -177,7 +182,7 @@ static void ADC_Config(void)
   AdcHandle.Init.DiscontinuousConvMode = DISABLE;
   AdcHandle.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   AdcHandle.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  AdcHandle.Init.NbrOfConversion = 5;
+  AdcHandle.Init.NbrOfConversion = 6;
   //AdcHandle.Init.NbrOfConversion = 1;
 
   if (HAL_ADC_Init(&AdcHandle) != HAL_OK)
@@ -195,7 +200,7 @@ static void ADC_Config(void)
   }
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_5;
+  sConfig.Channel = ADC_CHANNEL_1;
   sConfig.Rank = ADC_REGULAR_RANK_2;
   sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
   if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
@@ -204,7 +209,7 @@ static void ADC_Config(void)
   }
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_6;
+  sConfig.Channel = ADC_CHANNEL_5;
   sConfig.Rank = ADC_REGULAR_RANK_3;
   sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
   if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
@@ -213,7 +218,7 @@ static void ADC_Config(void)
   }
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_VREFINT;
+  sConfig.Channel = ADC_CHANNEL_6;
   sConfig.Rank = ADC_REGULAR_RANK_4;
   sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
   if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
@@ -222,8 +227,17 @@ static void ADC_Config(void)
   }
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
-  sConfig.Channel = ADC_CHANNEL_TEMPSENSOR;
+  sConfig.Channel = ADC_CHANNEL_VREFINT;
   sConfig.Rank = ADC_REGULAR_RANK_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
+  if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_TEMPSENSOR;
+  sConfig.Rank = ADC_REGULAR_RANK_6;
   sConfig.SamplingTime = ADC_SAMPLETIME_239CYCLES_5;
   if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
   {

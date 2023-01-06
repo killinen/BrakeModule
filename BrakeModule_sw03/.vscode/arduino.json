@@ -1,5 +1,6 @@
 {
     "configuration": "pnum=BLUEPILL_F103C8,upload_method=serialMethod,xserial=generic,usb=none,xusb=FS,opt=osstd,dbg=none,rtlib=nano",
     "board": "STMicroelectronics:stm32:GenF1",
-    "sketch": "BrakeModule_sw03.ino"
+    "sketch": "BrakeModule_sw03.ino",
+    "port": "/dev/ttyUSB0"
 }

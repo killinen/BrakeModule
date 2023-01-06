@@ -5,7 +5,7 @@
 
 #include <assert.h>
 
-#define DEBUG 0
+#define DEBUG 1
 
 bool fail_flag = false;                // Flag for any failure that would prevent OPENPILOT to engage and BrakeModule to turn ON
 
@@ -52,7 +52,7 @@ int16_t ComputeCANTimings(const uint32_t peripheral_clock_rate,
                           const uint32_t target_bitrate,
                           CAN_bit_timing_config_t* const out_timings)
 {
-    if (target_bitrate < 1000)
+    if (target_bitrate < 1000U)
     {
         return -CAN_STM32_ERROR_UNSUPPORTED_BIT_RATE;
     }
@@ -77,7 +77,7 @@ int16_t ComputeCANTimings(const uint32_t peripheral_clock_rate,
      *   250  kbps      16      17
      *   125  kbps      16      17
      */
-    const uint8_t max_quanta_per_bit = (uint8_t)((target_bitrate >= 1000000) ? 10 : 17);    // NOLINT
+    const uint8_t max_quanta_per_bit = (uint8_t)((target_bitrate >= 1000000U) ? 10U : 17U);    // NOLINT
     assert(max_quanta_per_bit <= (MaxBS1 + MaxBS2));
 
     static const uint16_t MaxSamplePointLocationPermill = 900;
@@ -97,11 +97,11 @@ int16_t ComputeCANTimings(const uint32_t peripheral_clock_rate,
     /*
      * Searching for such prescaler value so that the number of quanta per bit is highest.
      */
-    uint8_t bs1_bs2_sum = (uint8_t)(max_quanta_per_bit - 1);    // NOLINT
+    uint8_t bs1_bs2_sum = (uint8_t)(max_quanta_per_bit - 1U);    // NOLINT
 
-    while ((prescaler_bs % (1U + bs1_bs2_sum)) != 0)
+    while ((prescaler_bs % (1U + bs1_bs2_sum)) != 0U)
     {
-        if (bs1_bs2_sum <= 2)
+        if (bs1_bs2_sum <= 2U)
         {
             return -CAN_STM32_ERROR_UNSUPPORTED_BIT_RATE;          // No solution
         }
@@ -133,7 +133,7 @@ int16_t ComputeCANTimings(const uint32_t peripheral_clock_rate,
      *   - With rounding to nearest
      *   - With rounding to zero
      */
-    uint8_t bs1 = (uint8_t)(((7 * bs1_bs2_sum - 1) + 4) / 8);       // Trying rounding to nearest first  // NOLINT
+    uint8_t bs1 = (uint8_t)(((7U * bs1_bs2_sum - 1U) + 4U) / 8U);       // Trying rounding to nearest first  // NOLINT
     uint8_t bs2 = (uint8_t)(bs1_bs2_sum - bs1);  // NOLINT
     assert(bs1_bs2_sum > bs1);
 
@@ -142,12 +142,12 @@ int16_t ComputeCANTimings(const uint32_t peripheral_clock_rate,
 
         if (sample_point_permill > MaxSamplePointLocationPermill)   // Strictly more!
         {
-            bs1 = (uint8_t)((7 * bs1_bs2_sum - 1) / 8);             // Nope, too far; now rounding to zero
+            bs1 = (uint8_t)((7U * bs1_bs2_sum - 1U) / 8U);             // Nope, too far; now rounding to zero
             bs2 = (uint8_t)(bs1_bs2_sum - bs1);
         }
     }
 
-    const bool valid = (bs1 >= 1) && (bs1 <= MaxBS1) && (bs2 >= 1) && (bs2 <= MaxBS2);
+    const bool valid = (bs1 >= 1U) && (bs1 <= MaxBS1) && (bs2 >= 1U) && (bs2 <= MaxBS2);
 
     /*
      * Final validation
@@ -217,22 +217,22 @@ void printRegister(const char * buf, uint32_t reg) {
  *
  */
 void CANSetFilter(uint8_t index, uint8_t scale, uint8_t mode, uint8_t fifo, uint32_t bank1, uint32_t bank2) {
-  if (index > 27) return;
+  if (index > 27U) return;
 
   CAN1->FA1R &= ~(0x1UL<<index);               // Deactivate filter
 
-  if (scale == 0) {
+  if (scale == 0U) {
     CAN1->FS1R &= ~(0x1UL<<index);             // Set filter to Dual 16-bit scale configuration
   } else {
     CAN1->FS1R |= (0x1UL<<index);              // Set filter to single 32 bit configuration
   }
-    if (mode == 0) {
+    if (mode == 0U) {
     CAN1->FM1R &= ~(0x1UL<<index);             // Set filter to Mask mode
   } else {
     CAN1->FM1R |= (0x1UL<<index);              // Set filter to List mode
   }
 
-  if (fifo == 0) {
+  if (fifo == 0U) {
     CAN1->FFA1R &= ~(0x1UL<<index);            // Set filter assigned to FIFO 0
   } else {
     CAN1->FFA1R |= (0x1UL<<index);             // Set filter assigned to FIFO 1
@@ -343,7 +343,7 @@ bool CANInit(BITRATE bitrate, int remap)
   int result = ComputeCANTimings(HAL_RCC_GetPCLK1Freq(), target_bitrate, &timings);
   Serial.print("ComputeCANTimings result=");
   Serial.println(result);
-  if (result) while(true);  
+  if (result != 0) while(true);  
   CAN1->BTR = (((timings.resynchronization_jump_width - 1U) &    3U) << 24U) |
               (((timings.time_segment_1 - 1U)               &   15U) << 16U) |
               (((timings.time_segment_2 - 1U)               &    7U) << 20U) |
@@ -356,7 +356,7 @@ bool CANInit(BITRATE bitrate, int remap)
   // bxCAN has 28 filters.
   // These filters are shared by both CAN1 and CAN2.
   // STM32F103 has only CAN1, so all 28 are used for CAN1
-  CAN1->FMR  |= 0x1C << 8;              // Assign all filters to CAN1
+  CAN1->FMR  |= 0x1CU << 8;              // Assign all filters to CAN1
 
   // Set fileter 0
   // Single 32-bit scale configuration 
@@ -412,7 +412,7 @@ bool CANInit(BITRATE bitrate, int remap)
 void CANReceive(CAN_msg_t* CAN_rx_msg)
 {
   uint32_t id = CAN1->sFIFOMailBox[0].RIR;
-  if ((id & STM32_CAN_RIR_IDE) == 0) { // Standard frame format
+  if ((id & STM32_CAN_RIR_IDE) == 0U) { // Standard frame format
       CAN_rx_msg->format = STANDARD_FORMAT;;
       CAN_rx_msg->id = (CAN_STD_ID_MASK & (id >> 21U));
   } 
@@ -421,7 +421,7 @@ void CANReceive(CAN_msg_t* CAN_rx_msg)
       CAN_rx_msg->id = (CAN_EXT_ID_MASK & (id >> 3U));
   }
 
-  if ((id & STM32_CAN_RIR_RTR) == 0) { // Data frame
+  if ((id & STM32_CAN_RIR_RTR) == 0U) { // Data frame
       CAN_rx_msg->type = DATA_FRAME;
   }
   else {                               // Remote frame
@@ -485,10 +485,15 @@ void CANSend(CAN_msg_t* CAN_tx_msg)
   CAN1->sTxMailBox[0].TIR = out | STM32_CAN_TIR_TXRQ;
 
   // Wait until the mailbox is empty
-  while(CAN1->sTxMailBox[0].TIR & 0x1UL && count++ < 1000000);
+  //while(((CAN1->sTxMailBox[0].TIR & 0x1UL) != 0) && (count++ < 1000000));
+  // Test if this work like above and solves the MISRA2012:13.5 violation
+  while(((CAN1->sTxMailBox[0].TIR & 0x1UL) != 0) && (count < 1000000)) {
+    count++;
+  }
 
   // The mailbox don't becomes empty while loop
-  if (CAN1->sTxMailBox[0].TIR & 0x1UL) {
+  //if (CAN1->sTxMailBox[0].TIR & 0x1UL) {
+  if ((CAN1->sTxMailBox[0].TIR & 0x1UL) != 0U) {
     Serial.println("Send Fail");
     Serial.println(CAN1->ESR);
     Serial.println(CAN1->MSR);

@@ -1,7 +1,7 @@
 
 /*
   Software for BrakeModule v0.3.2
-  Sofware version 0.3
+  Software version 0.3
 
   The Main purpose of the module is to control charge pump so that the car will brake wo any errors on the car side and be an CC for OP so that it can controlled from the steering wheel buttons.
   Functionalities in software version 0.1:
@@ -28,14 +28,14 @@ Remember that in STM32F103xC max currents are (datasheet p. 43):
 - Total injected current (sum of all I/O and control pins) +/- 25 mA
 
   v0.2 will try to:
-  - Fix bug where DSC gives DTC when harshly braking and OP disconnect (I believe it is caused by brake light signal going to zero w high brakeline pressure (zeroing problem)
-    - Add brakepressure reading from 0x77F to CAN read
-    - Add if statement not to disenage brakelight signal if brakepressure over threashold
-  - Make change to OP disengage logik so that it will disconnect only when brake pedal is pressed and OP want's to accelerate, not only for brakelight signal
-    - Add GAS_COMMAND from 0x200 to CAN read
+  - Fix bug where DSC gives DTC when harshly braking and OP disconnect (I believe it is caused by brake light signal going to zero w high brakeline pressure (zeroing problem) -> Maybe below solutions solved this
+    - Add brakepressure reading from 0x77F to CAN read -> DONE
+    - Add if statement not to disengage brakelight signal if brakepressure over threshold -> DONE
+  - Make change to OP disengage logik so that it will disconnect only when brake pedal is pressed and OP want's to accelerate, not only for brakelight signal -> DONE
+    - Add GAS_COMMAND from 0x200 to CAN read -> DONE
   - Some code cleanup
-    - Delete STM32 uncommented variables
-    - Uncomment vout and temp variables
+    - Delete STM32 uncommented variables -> DONE
+    - Uncomment vout and temp variables -> DONE
     - Delete uncommented old MyTim->setPWM functions
     
   v0.3 will try to:
@@ -46,39 +46,39 @@ Remember that in STM32F103xC max currents are (datasheet p. 43):
       -> FUNCTION made
     - Lock pin configuration in GPIOx_LCKR register, so that our pin counfigurations won't change for accidential bit flip (have to check if this is configuration lock or pin state lock) http://slemi.info/2017/04/16/configuring-io-pins/
       -> DONE?
-    - Panic at high STM32 chip temperature
-    - IWDG -> Done before
+    - Panic at high STM32 chip temperature -> DONE
+    - IWDG -> DONE before
     - Detect ADC freeze (see if there is some normal fluctuation on values) -> DONE
-    - ADC averaging (suppress one off)
+    - Make debugBlinky -> DONE
+    - Make explanations for the fail_flags to debug what caused the failure
+    - If there is sent fail (CAN BUS fail, the loop speed decreases drastically), check this!
+    - ADC averaging (suppress one off) (or max difference?)
     - ADC min/max values (analogWatchdog?) / max ROC / not possible values
     - CAN msg CRC check (can be done in HW? and can this be implement somehow to other critical data?)  -> DONE?
     - Add bit and operation for CAN msg byte relevant bits (decrease possibility of bit flip messing the wanted value)
     - CAN bus fail detection -> It is DONE in STM32F1_CAN.h and if not 0x343 is correctly received in x amount cycles
-    - Brake demand boudaries -> DONE?
+    - Brake demand boundaries -> DONE?
     - SetSpeed min/max values -> DONE?
     - Read DSC state from CAN and if not on disengage
-    - Read and compare:
+    - Read and compare:   (maybe think if this is wise, maybe only if brake pressure then pedal must be pressed (is it needed bc this is done in DSC))
       - Brake pressure from CAN
       - Brake pedal state from CAN
-    - Compare pump line voltage to DSC line voltage when -> NOT POSSIBLE AT THIS HW
+    - Compare pump line voltage to DSC line voltage when -> NOT POSSIBLE AT THIS HW -> Maybe in test HW :>
     - Think how transition from BM ON state to OFF state should be done so that it would be most unlikely that the BM will trigger DTC in DSC
         - Is it possible to DSC to run CP when brake pedal (or brakepressure) press is detected
             - If PMP line voltage is detected wo brake demand don't switch to OFF state
-            - How would brake pressure zeroing problem would be tackled when transitiong from ON to OFF state in panic mode
+            - How would brake pressure zeroing problem would be tackled when transitioning from ON to OFF state in panic mode
                 - Is this problem in DSC event
         - Is best strategy to change BM state or track DSC brake demand and run BM accordingly
 
 
   TODO:
-  - Make OP disconnect only when brake pedal pressed AND OP wants to accelerate, this gives flexibility to S&G driving and is probably nowadays accepted protocol by comma
-  - Look if ADCwatchdog stuff really needed
   - Clean the AVR/STM32 parallel code
   - Test if releasetimer could be replaced with brakepressure
-  - Try to find out what is wrong with TMP36 -> Defected sensor
   - Add 1M looptyme to CAN
   - Don't connect pump back to DSC if brake pressure is above certain threshold (try to prevent bug that triggers DSC DTC if braked hard and pump is running and then connects back to DSC)
-  - Clean readSerial() stuff -> Done?
-  - Have multiple redings of each ADC channel (really needed for this application?)
+  - Clean readSerial() stuff -> Did some cleaning -> More?
+  - Have multiple readings of each ADC channel
   - Implement BLS LOW side detection (is it possible w this HW?)
   
 */
@@ -96,10 +96,13 @@ Remember that in STM32F103xC max currents are (datasheet p. 43):
 #define DWN         64U                    // This is DOWN button press value for button press byte (BTN_CMD)
 #define RSM         96U                    // This is RESUME button press value for button press byte (BTN_CMD)
 
-#define FROZEN_THRESHOLD 10               // Freezed ADC detection threshold value
-#define DSC_THRESHOLD 3000U                // Value that trigger DSC pump demand
-#define DSC_MAX 3500U                      // MAX value that should be detected in DSC_volt
+#define FROZEN_THRESHOLD     10           // Freezed ADC detection threshold value
+#define DSC_THRESHOLD     3000U           // Value that trigger DSC pump demand
+#define DSC_MAX           3500U           // MAX value that should be detected in DSC_volt
 
+#define pwm_pin PA8
+#define max(a,b) ((a)>(b)?(a):(b))
+#define min(a,b) ((a)<(b)?(a):(b))
 
 uint32_t dallasTyme = 0;                  // 5 sec interval time value for reading DS18B20 and some other stuff
 uint32_t loopTyme = 0;                    // Time value for every 1 million loop cycles
@@ -109,18 +112,25 @@ uint32_t previousMillis2 = 15;            // Time value for last sent 0x1D3 msg
 uint32_t timerRelease = 0;                // Time value for delaying the transition from direct drive of the charge pump back to ABS control
 uint32_t rampTyme = 0;                    // Time value for interval value for detecting multiple set speed up or down value
 uint32_t loopydoo = 0;                    // Time difference value for every 1 million loop cycles
+uint32_t blinkyTyme = 0;                  // Time difference value for blnkyLed
 uint32_t counter = 0;                     // Count value for counting 1 million loops
 uint32_t CAN_count = 0;                   // Count value for number of CAN msg reads
 
-int16_t  whole = 0;                       // Whole number of the DS18B20 temperature read
+float STMtemp;                            // Internal temperature of the STM32F1 chip
+float Vsense;                             // Internal reference voltage of the ADC
+int32_t iSTMtemp;                            // Internal temperature of the STM32F1 chip
+int32_t iVsense;                             // Internal reference voltage of the ADC
+
+int16_t  TMP36 = 0;                       // TMP36 temperature read in desicelsius (200 = 20 degrees C)
 int16_t  BRK_CMD = 0;                     // Deceleration value (wanted braking) from OP read from CAN
 uint16_t errcounter = 0;                  // Errorcounter for disabling OP if non 0x343 is received at 65000 cycletimes
 uint16_t CNL_REQ_CNT = 0;                 // Counter for detecting BrakeModule cancel request (disable module)
-uint16_t BRK_ST_CNT = 0;                  // Counter for delaying BRK_ST_OP happening so that OP wont disengage unnessaccarely
+uint16_t BRK_ST_CNT = 0;                  // Counter for delaying BRK_ST_OP happening so that OP wont disengage unnecessarily
 uint16_t DSC_volt = 0;                    // Value of voltage from DSC+ line in milliVolts (this has to be int if used in minus calculation)
 uint16_t previousDSC_volt = 0;            // Save previous DSC_volt for freezed ADC detection (this has to be int if used in minus calculation)
-uint16_t car_speed = 0;                   // Value of the readed car speed
-uint16_t ADC_frozen = 0;                  // Counter for frozed ADC values
+uint16_t car_speed = 0;                   // Value of the read car speed
+uint16_t ADC_frozen = 0;                  // Counter for frozen ADC values
+uint16_t ledInterval = 2000;              // Interval value for blinkyLed
 
 uint8_t set_speed = 0;                    // Speed value sent to OP to be the set speed of the cruise control
 uint8_t BRK_ST = 0;                       // Brake pedal state from CAN
@@ -129,39 +139,29 @@ uint8_t BTN_CMD = 0;                      // Steering wheel button state from CA
 uint8_t OCC = 0;                          // Car cruise control pre-enable state from CAN
 uint8_t CNL_REQ = 0;                      // Cancel request (disable) to BrakeModule sent by OP through CAN
 uint8_t BRK_CMD_CRC = 0;                  // 0x343 CRC calculation
+uint8_t CC_ST_OP = false;                 // State of emulation of TOYOTA cruise control sent to OP
 
 bool BRK_FLG = false;                     // Braking logik flags, flags true when OP starts to brake
 bool RLS_FLG = false;                     // Braking logik flags, flag for intermediate step for going back from OP control to ABS control
-bool ADC_FLG;                             // Flag for ADC conrversion
+bool ADC_FLG;                             // Flag for ADC conversion
 bool FAN_ON = 0;                          // Flag for FAN control
-uint8_t CC_ST_OP = false;                 // State of emulation of TOYOTA cruise control sent to OP
 bool BTN_PRS_FLG = false;                 // Flag for Steering wheel button presses
 // bool fail_flag = false;                // Flag for any failure that would prevent OPENPILOT to engage and BrakeModule to turn ON
 
 //Interpolation shit, this is done BC relationship of PWM and brake pressure is not linear
 
-// in[] holds the read values from BRK_CMD so are the INPUT values for the interpolation for OUTPUTing the PWM values regaring of the INPUT
+// in[] holds the read values from BRK_CMD so are the INPUT values for the interpolation for OUTPUTing the PWM values regarding of the INPUT
 // note: the in array should have increasing values
 int cmd_in[]  = {-1000, -900, -800, -700, -600, -500, -400, -300, -200, -100, -50};
 // out[] holds the values wanted in OUTPUT regarding to INPUT in[], these are PWM duty cycle% values that are interpolated from BRK_CMD values
 int pwm_out[] = {100, 97, 93, 88, 81, 73, 67, 59, 54, 39, 20};    // This is STM323F1 values
 
-// ******************************* STM32 Variables *******************************************************
-
-#define pwm_pin PA8
-#define max(a,b) ((a)>(b)?(a):(b))
-#define min(a,b) ((a)<(b)?(a):(b))
-
 uint16_t freq = 15000;
-
-//uint16_t vout = 0;
-//int16_t temp = 0;
-
 uint16_t BLTS_volt = 0;                   // Brake-light test switch circuit read
 uint16_t BRK_PRS = 0;
 uint16_t ACC_CMD = 0;
 
-// uint16_t id;    // This is unnessaccary? Why don't just use CAN_RX_msg.id
+// uint16_t id;    // This is unnecessary? Why don't just use CAN_RX_msg.id
 // uint8_t dlc;
 // uint8_t arry[8];
 
@@ -249,12 +249,14 @@ void loop() {
 
   currentMillis = millis();
 
-  // This is to show how fast is the looptyme, the value given is average loop excecution time per 1 million loopcycles in nanoseconds
+  // This is to show how fast is the looptyme, the value given is average loop execution time per 1 million loopcycles in nanoseconds
   if (counter > 1000000U) {
    loopydoo = currentMillis - loopTyme;
    #ifdef DEBUG
+   Serial.println();
    Serial.print("Loop tyme was in 1M cycles: ");
    Serial.println(loopydoo);
+   Serial.println();
    #endif
    counter = 0;
    loopTyme = millis();
@@ -273,21 +275,22 @@ void loop() {
   // ADC bit resolution is 12
   // ADC clock is set 12 MHz
   // Sampling time is set to 239.5 cycles per sample
-  // ADC values are read from 5 channels
+  // ADC values are read from 6 channels
   // ADC conversion time is: ( 1.5 cycles + 239.5 cycles ) / 12 cycles per uS = 20,8 uS
-  // When all 5 has been read, one channel will update every 100,4 uS
+  // When all 6 has been read, one channel will update every 125 uS
   DSC_volt = ADCValues[0];
-  BLTS_volt = ADCValues[1];
+  BLTS_volt = ADCValues[2];
 
   // Check if the ADC value is changing by more than the threshold
   // over multiple readings
-  if (abs(DSC_volt - previousDSC_volt) < FROZEN_THRESHOLD) {
+  //if (abs(DSC_volt - previousDSC_volt) < FROZEN_THRESHOLD) {
+  if ((abs(DSC_volt - previousDSC_volt) < FROZEN_THRESHOLD) && (DSC_volt > 0U)) { // Maybe this is just used for testing, test if 0 value check is necessary in production
     // The ADC is frozen, so do something about it (e.g. try restarting it)
-    ADC_frozen++;
-    if (ADC_frozen > 10000U) {     // TODO: Calculate if this value changes per loop and how long this takes if frozen
+    ADC_frozen++;                   // Counter for not triggering the failure with few same values (see ADC update interval)
+    if (ADC_frozen > 25000U) {     // TODO: Calculate if this value changes per loop and how long this takes if frozen (if ~20 uS/loop, trigger time is 500 millisecond)
       fail_flag = true;
       #ifdef DEBUG
-        Serial.println("ADC frozed");
+        Serial.println("ADC frozed");      // If ADC Frozed this was printed way too often
       #endif
     }
   }
@@ -340,7 +343,7 @@ void loop() {
       if (cksum == CAN_RX_msg.data[7]) {
         BRK_CMD = ((CAN_RX_msg.data[0] << 8) | CAN_RX_msg.data[1]);   // Read brake request value from OP
         BRK_CMD = max(-3500, BRK_CMD);                          // Is these values clipped already in interpolation
-        BRK_CMD = min(100, BRK_CMD);                            // Is these values clipped already in interpolation
+        BRK_CMD = min(150, BRK_CMD);                            // Is these values clipped already in interpolation
         CNL_REQ = (CAN_RX_msg.data[3] & B00000001);             // Read cancel request flag from OP
         //Serial.println("0x343");
         CAN_count++;
@@ -383,7 +386,7 @@ void loop() {
 
   if ((BTN_CMD == UP) && (currentMillis - rampTyme) > RAMP_VALUE) {       // Ramp up set speed in orderly manner, 60 ms delay on incrementing set speed value so that change isn't too fast
     set_speed++;
-    set_speed = min(set_speed, 135U);                                    // Restrict max value of set_speed to 135
+    set_speed = min(set_speed, 135U);                                    // Restrict max value of set_speed to 135 kph
     rampTyme = currentMillis;
   }
   if ((BTN_CMD == DWN) && (currentMillis - rampTyme) > RAMP_VALUE) {      // Ramp down set speed in orderly manner, 60 ms delay on incrementing set speed value so that change isn't too fast
@@ -415,7 +418,7 @@ void loop() {
 //   }
  
 
-  // New OP brake signal logik based on reading OP acceleration demand and brake pedal state. NOTE TO SELF make better logik, this for testing only
+  // New OP brake signal logik based on reading OP acceleration demand and brake pedal state. NOTE TO SELF is this good logik?
   if ((BLTS_volt > 1500U) && (ACC_CMD > 500U)) {   // 
     BRK_ST_OP = 1;
   }
@@ -472,7 +475,7 @@ void loop() {
   }
 
   // This is when we want to start braking
-  if ((BRK_CMD < -50) && (BRK_FLG == false)) {
+  if ((BRK_CMD < -50) && (BRK_FLG == false) && (fail_flag == false)) {
     // digitalWrite(PB0, HIGH);
     // digitalWrite(PB1, HIGH);
 
@@ -489,9 +492,9 @@ void loop() {
   }
 
   //if (BRK_FLG == true && RLS_FLG == false){   // This is done this way BC then upper func wont be excecuted in every loop, only this
-  if ((BRK_FLG == true) && (RLS_FLG == false) && (errcounter == 0U)){   // This is done this way BC so that the PWM wont be done at every cycle loop but every 10 ms (change of 0x343)
+  if ((BRK_FLG == true) && (RLS_FLG == false) && (errcounter == 0U)) {   // This is done this way BC so that the PWM wont be done at every cycle loop but every 10 ms (change of 0x343)
     // Check if DSC line has drive voltage and drive the FET accordingly (this is safety feature)
-    if (DSC_volt > DSC_THRESHOLD){
+    if (DSC_volt > DSC_THRESHOLD) {
       PWM = 100;
     }
     else {
@@ -550,49 +553,89 @@ void loop() {
   // Do this every 1 sec so it wont bother other stuff so much
   if ((currentMillis - dallasTyme) > 1000U) {
     #ifdef DEBUG
-    digitalWrite(PC13, !digitalRead(PC13));
+    //digitalWrite(PC13, !digitalRead(PC13));   // Chanced to own function for deBug
     Serial.print("ADC[0] (PA0) value is ");
     Serial.println(DSC_volt);
-    Serial.print("ADC[1] (PA5) value is ");
+    Serial.print("ADC[1] (TMP36) value is ");
     Serial.println(ADCValues[1]);
-    Serial.print("ADC[2] value (PA6) is ");
+    Serial.print("ADC[2] value (PA5) is ");
     Serial.println(ADCValues[2]);
+    Serial.print("VREFINT is ");
+    Serial.println(ADCValues[4]);
+    Serial.print("INT TEMP ADC is ");
+    Serial.println(ADCValues[5]);
     Serial.print("ADC watchdog status is ");
     Serial.println(ubAnalogWatchdogStatus);
     Serial.print("Brake pressure is ");
     Serial.println(BRK_PRS);
+    Serial.print("BRK_CMD is ");
     Serial.println(BRK_CMD);
     Serial.println(PWM);
+    Serial.print("Counter is ");
+    Serial.println(counter);
+    Serial.print("errCounter is ");
+    Serial.println(errcounter);
+    Serial.print("fail_flag is ");
+    Serial.println(fail_flag);
+    Serial.print("TMP36 TEMP is ");
+    Serial.println(TMP36);
+    Serial.print("Vsense is ");
+    Serial.println(iVsense);
+    Serial.print("STM32 chip temp is ");
+    Serial.println(iSTMtemp);
     #endif
     
-    dallasTyme = millis();
+    dallasTyme = currentMillis;
   }
 
-  
-// *********************************** FAN CONTROL **************************************
+  // Do blinkyLed stuff for debugging
+  if ((currentMillis - blinkyTyme) > ledInterval) {
+    digitalWrite(PC13, !digitalRead(PC13));
+    blinkyTyme = currentMillis;
+  }
 
-// NOTE TO SELF this is not implemented on 0.3.2 version bc havent got TMP36 working and cooling unlikely neccassary
+  // Failure detected, make blinkyLed blink more faster
+  if (fail_flag == true) {
+    ledInterval = 200;
+  }
+  else {
+    ledInterval = 2000;
+  }
+  
+// ********************************** TEMPERATURE MONITORING n CONTROL **************************************
+
+  // This gives POWER MOSFET temperature in desicelsius
+  TMP36 = (((ADCValues[1] * 3300) / 4096) - 500);
+
+  // This gives the internal temperature of the STM32 chip
+//  Vsense = (1.2 * ADCValues[5]) / ADCValues[4];
+//  STMtemp = ((1.43 - Vsense ) / 0.0043) + 50;
+
+  // This is ~4 times faster than above
+  iVsense = (120000 * ADCValues[5]) / ADCValues[4];
+  iSTMtemp = ((143000 - iVsense ) / 43) + 500; 
 
   #ifdef FAN_CTRL
-  if ((whole > 45) && !FAN_ON) {
+  if ((TMP36 > 450) && !FAN_ON) {
     digitalWrite(PB14, HIGH);                 // Turn FAN pin HIGH when FET temp over 45 degrees
     FAN_ON = 1;
   }
-  if ((whole < 45) && FAN_ON) {
+  if ((TMP36 < 450) && FAN_ON) {
     digitalWrite(PB14, LOW);;                // Turn FAN pin LOW when FET temp under 45 degrees
     FAN_ON = 0;
   }
   #endif
 
-  if (whole > 80) {               // If FET temp over 80 degrees disable OP
-    CC_ST_OP = false;
-    CNL_REQ = 1;
+  if (TMP36 > 800 || iSTMtemp > 500) {               // If FET temp over 80 degrees or STM32 internal temp over 50, disable OP
+    fail_flag = true;
   }
+
   
   if ((errcounter > 65000U) || (fail_flag == true)) {      // errcounter func is triggered every (65000 x ~9us =) 585 ms if no 0x343 msg is detected which should arrive every 10 ms
     CC_ST_OP = false;
     CNL_REQ = 1;
     errcounter = 0;
+    // Make this tstuff so that it will disconnect properly, and does not cause DTC
     MyTim->setCaptureCompare(channel, 0, PERCENT_COMPARE_FORMAT);
     digitalWrite(PA7, LOW);               // 12V to PUMP relay HIGH == connect
     digitalWrite(PB0, LOW);
@@ -698,21 +741,16 @@ void relays_off()
 }
 
 // Read pin OUTPUT states from input data register IDR (STM32F1 RM0008 p. 163, 172)
-int read_output_states()
+bool read_output_states()
 {
   /* read PC13 */
   //if(GPIOC -> IDR & GPIO_PIN_13)
-  uint8_t state;
   if((GPIOB -> IDR & (GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_12 | GPIO_PIN_13)) && (GPIOA -> IDR & GPIO_PIN_7))
   {
     // Stuff
-    state = true;
+    return true;
   }
-  else
-  {
-    state = false;
-  }
-  return state;
+    return false;
 }
 
 // LOCK pin configuration (STM32F1 RM0008 p. 174)
@@ -727,8 +765,9 @@ void port_lock_conf()
   HAL_GPIO_LockPin(GPIOB, GPIO_PIN_12);
   HAL_GPIO_LockPin(GPIOB, GPIO_PIN_13);
 
-  /* LOCK pin configuration of PA0, PA5, PA6 */
+  /* LOCK pin configuration of PA0, PA1, PA5, PA6 */
   HAL_GPIO_LockPin(GPIOA, GPIO_PIN_0);
+  HAL_GPIO_LockPin(GPIOA, GPIO_PIN_1);
   HAL_GPIO_LockPin(GPIOA, GPIO_PIN_5);
   HAL_GPIO_LockPin(GPIOA, GPIO_PIN_6);
 }
@@ -740,7 +779,7 @@ float Vsense;
 float iTemp;
 float vdd;
   vdd = 1.20 * (4096.0 / ADCValues[3]);                               // Is this input voltage compared to 1.2 reference voltage
-  Vsense = vdd/4096 * ADCValues[4];
+  Vsense = vdd/4096.0 * ADCValues[4];
   iTemp = ((1.43 - Vsense ) / 0.0043) + 50;
   return iTemp;
 }
@@ -759,11 +798,17 @@ void readSerial()
       Serial.println(input);
 
       if ((input > 1) && (input < 101)) {
-        MyTim->setCaptureCompare(channel, 0, PERCENT_COMPARE_FORMAT);
+        MyTim->setCaptureCompare(channel, input, PERCENT_COMPARE_FORMAT);
+        Serial.print("PWM input is ");
+        Serial.println(input);
+        Serial.println();
+        
       }
       else if (input == 101) {
+        Serial.println();
         Serial.print("CAN count was ");
         Serial.println(CAN_count);
+        Serial.println();
         CAN_count = 0;
       }
       else if (input == 200) {

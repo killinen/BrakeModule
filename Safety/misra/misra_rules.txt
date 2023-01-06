@@ -146,7 +146,7 @@ No text specified
 Rule 13.4
 Advisory - Assignment operation should not be used in an expression (Check for = when == should have been used)
 Rule 13.5
-No text specified
+Required - The right hand operand of a logical && or || operator shall not contain persistent side effects.
 Rule 13.6
 No text specified
 Rule 14.1
