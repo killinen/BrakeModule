@@ -90,11 +90,11 @@ Remember that in STM32F103xC max currents are (datasheet p. 43):
 // #define FAN_CTRL                          // If defined use FAN for PWR MOSFET temperature control
 // #define DEBUG                             // If defined use serial for debugging -> This is defined in "STM32F1_CAN.h"
 
-#define RAMP_VALUE  60U                    // Interval time between multiple button presses detections in milliseconds
-#define INTERVAL    30U                    // Interval time at which to send 0x1D2 and 0x1D3 messages (milliseconds)
-#define UP          32U                    // This is UP button press value for button press byte (BTN_CMD)
-#define DWN         64U                    // This is DOWN button press value for button press byte (BTN_CMD)
-#define RSM         96U                    // This is RESUME button press value for button press byte (BTN_CMD)
+#define RAMP_VALUE  60U                   // Interval time between multiple button presses detections in milliseconds
+#define INTERVAL    30U                   // Interval time at which to send 0x1D2 and 0x1D3 messages (milliseconds)
+#define UP          32U                   // This is UP button press value for button press byte (BTN_CMD)
+#define DWN         64U                   // This is DOWN button press value for button press byte (BTN_CMD)
+#define RSM         96U                   // This is RESUME button press value for button press byte (BTN_CMD)
 
 #define FROZEN_THRESHOLD     10           // Freezed ADC detection threshold value
 #define DSC_THRESHOLD     3000U           // Value that trigger DSC pump demand
@@ -118,8 +118,8 @@ uint32_t CAN_count = 0;                   // Count value for number of CAN msg r
 
 float STMtemp;                            // Internal temperature of the STM32F1 chip
 float Vsense;                             // Internal reference voltage of the ADC
-int32_t iSTMtemp;                            // Internal temperature of the STM32F1 chip
-int32_t iVsense;                             // Internal reference voltage of the ADC
+int32_t iSTMtemp;                         // Internal temperature of the STM32F1 chip
+int32_t iVsense;                          // Internal reference voltage of the ADC
 
 int16_t  TMP36 = 0;                       // TMP36 temperature read in desicelsius (200 = 20 degrees C)
 int16_t  BRK_CMD = 0;                     // Deceleration value (wanted braking) from OP read from CAN
@@ -139,12 +139,11 @@ uint8_t BTN_CMD = 0;                      // Steering wheel button state from CA
 uint8_t OCC = 0;                          // Car cruise control pre-enable state from CAN
 uint8_t CNL_REQ = 0;                      // Cancel request (disable) to BrakeModule sent by OP through CAN
 uint8_t BRK_CMD_CRC = 0;                  // 0x343 CRC calculation
-uint8_t CC_ST_OP = false;                 // State of emulation of TOYOTA cruise control sent to OP
+uint8_t CC_ST_OP = 0;                     // State of emulation of TOYOTA cruise control sent to OP
 
 bool BRK_FLG = false;                     // Braking logik flags, flags true when OP starts to brake
 bool RLS_FLG = false;                     // Braking logik flags, flag for intermediate step for going back from OP control to ABS control
-bool ADC_FLG;                             // Flag for ADC conversion
-bool FAN_ON = 0;                          // Flag for FAN control
+bool FAN_ON = false;                      // Flag for FAN control
 bool BTN_PRS_FLG = false;                 // Flag for Steering wheel button presses
 // bool fail_flag = false;                // Flag for any failure that would prevent OPENPILOT to engage and BrakeModule to turn ON
 
