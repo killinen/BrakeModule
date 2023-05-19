@@ -16,12 +16,51 @@ The software and hardware of this project has been done by fellow that have no k
 This module has been designed for use with a car equipped with the BOSCH ABS 5.7 Dynamic Stability Control system 3 (DSCIII). It is possible that this module could be adapted for use with other cars that use this system, but modifications to the software may be required. The description of the system provided here is based on the author's observations and assumptions, and may not be accurate for all cars that use this system. There might also be a change this could be used on BOSCH 5.3 system, if DSCIII (or similar) is implemented.
 
 List of cars that use BOSCH 5.7 system found on the internet.
-
+<!--
 <p align="left">
   <img src="Pics/Bosch57cars.PNG?raw=true">
 </p>
+-->
+| Brand            | Model and year         |                     |                          |                    |
+|------------------|------------------------|---------------------|--------------------------|--------------------|
+| Acura            | RL, 2000-2004          |                     |                          |                    |
+| Audi             | A4, 2000-2004          | A4, 2004-2008       | A6, 1997-2004            | A7, 2001-2005      |
+| Audi             | A8, 2002-2010          | S4, 2004-2006       | S6, 2002-2003            | RS6, 2003          |
+| Alfa Romeo       | 148, 2001-2010         | 156, 1997-2005      | 166, 1998-2007           | GT, 2003-2010      |
+| Bentley          | Continental, 2004-2008 |                     |                          |                    |
+| BMW              | E39, 1995-2003         | E46, 1998-2005      | E38, 1994-2001           | E65 E66, 2001-2011 |
+| BMW              | E53, 2000-2007         | E52, 2000-2004      |                          |                    |
+| Citroen          | C8, 2002->             | Xsara, 1997-2005    | Xsara Picasso, 1999-2010 |                    |
+| Dodge            | Sprinter, 2003-2006    |                     |                          |                    |
+| Ferrari          | F430, 2005             |                     |                          |                    |
+| Fiat             | Stilo, 2001-2008       | Ulysse, 2002-2011   |                          |                    |
+| Ford             | Mondeo, 2000-2007      |                     |                          |                    |
+| Jaguar           | X-type, 2001-2009      |                     |                          |                    |
+| Lancia           | Phedra, 2002-2010      |                     |                          |                    |
+| Land/Range Rover | 2002-2012              |                     |                          |                    |
+| Maserati         | Quattroporte, 2004->   |                     |                          |                    |
+| Mercedes-Benz    | Sprinter, 1995-2006    | Viano, 2003->       | V-Class, 1996-2003       |                    |
+| Opel/Vauxhall    | Vectra, 1998-2001      |                     |                          |                    |
+| Peugeot          | 307, 2000-2008         | 807, 2002->         |                          |                    |
+| Porsche          | 911, 1997-2005         | 996, 2002-2004      |                          |                    |
+| Renault          | Avantime, 2001-2003    | Clio, 1998-2005     | Clio, 2005-2012          | Megane, 2002-2008  |
+| Rover            | 75, 1999-2005          |                     |                          |                    |
+| Seat             | Cordoba, 2002-2009     | Ibiza, 1999-2002    |                          |                    |
+| Skoda            | Fabia, 1999-2007       | Felicia, 1994-1998  | Superb, 2002-2008        |                    |
+| Saab             | 9-3, 1999-2002         | 9-5, 2002-2004      |                          |                    |
+| Smart            | City-Coupe, 1998-2007  | Roadster, 2003-2005 |                          |                    |
+| Subaru           | Outback, 2003-2009     |                     |                          |                    |
+| Toyota           | Avensis, 1997-2003     | Avensis, 2003-2008  | Corolla, 2001-2007       | Verso, 2001-2007   |
+| Volkswagen       | Passat, 2000-2005      | Phaeton, 2002->     | Polo, 2001-2009          |                    |
 
-I'm not sure if these are compatible cars, meaning that does these have charge pump that needs to be in place to brake the car.
+Likely there are more, found also these:
+- Ford Freestyle
+- Honda Civic, Passport, and Pilot
+- Lincoln Town Car
+- Mercury Grand Marquis and Sable
+- Subaru Baja, Forester, Impreza, Legacy
+
+I cannot guarantee the accuracy of this list, and I'm uncertain if all the mentioned cars are compatible or equipped with the necessary charge pump for braking purposes.
 
 The BrakeModule has been designed to receive brake request values from OPENPILOT via the CAN bus. OPENPILOT is an open source driver assistance system that offers Automated Lane Centering and Adaptive Cruise Control for over 200 supported car makes and models. To function properly, OPENPILOT needs to be able to control the longitudinal (gas and brake) and lateral (steering) movements of the car using the CAN bus. For more information, see https://comma.ai/ and https://github.com/commaai/openpilot.
 
@@ -37,8 +76,6 @@ https://user-images.githubusercontent.com/37126045/204889544-91e67136-c381-4791-
 The following video demonstrates the performance of OPENPILOT and BrakeModule together. The pink graph shows brake pressure in bar, the purple graph shows gas pedal position (controlled by OPENPILOT, not the driver), the blue graph shows car speed in km/h, and the turquoise graph shows the distance to the lead car in meters.
 
 https://user-images.githubusercontent.com/37126045/205499143-c1d0632b-0707-4776-ab54-dc6cb979e526.mp4
-
-The BrakeModule could potentially be used with other adaptive cruise control systems (ACC) by modifying its software.
 
 ---
 
@@ -61,7 +98,7 @@ Picture of BOSCH 5.7 with DSCIII.
   <img src="Pics/DSCIII.PNG?raw=true">
 </p>
 
-By controlling the charge pump, which is responsible for raising brake pressure in the system (10-15 bar), we can also control the car's braking. The charge pump increases brake pressure on both the front and rear axles.
+By controlling the charge pump, which is responsible for raising brake pressure in the system (10-15 bar), we can also control the car's braking. The charge pump increases brake pressure on both the front and rear axles. Below is snippet from DSC manual that explains how the charge pump control the brakes.
 
 <p align="left">
   <img src="Pics/Charge_pump_operation.png?raw=true">
@@ -69,7 +106,7 @@ By controlling the charge pump, which is responsible for raising brake pressure 
 
 The charge pump is controlled by two N-channel MOSFETs inside the control module, in a half-bridge configuration.
 
-Pic of the 2 FETs inside the module, right one is damaged. These are not the regular type black thingies (type TO-220) that you likely see as MOSFETs.
+Pic of the 2 FETs inside the module, right one is damaged. These are not the regular type black thingies (type [TO-220](https://en.wikipedia.org/wiki/TO-220)) that you likely see as MOSFETs.
 <p align="left">
   <img src="Pics/PumpFETs.PNG?raw=true">
 </p>
@@ -185,8 +222,6 @@ The BrakeModule is used to simulate the cruise control system of a TOYOTA Coroll
 
 If DEBUG is #defined in software you can control the board via serial (look at the readSerial() function) + some debugging messages are shown.
 
-If FAN_CTRL is #defined in software and temperature over 45 degrees is measured by TMP36 (not implemented on v0.3 code), small NPN transistor is pulled low which is connected to FAN connector (designed for cooling the MOSFET). Also if temperature exceeds 80 degrees, brake module will disable OPENPILOT and wont engage until temperature is below that (this this shabang might is not necessary at least haven't been for me).
-
 If FAN_CTRL is #defined in the software and the temperature measured by the TMP36 sensor (not implemented in the v0.3 code) exceeds 45 degrees, a small NPN transistor is pulled low, which is connected to the FAN connector (designed to cool the MOSFET). Additionally, if the temperature exceeds 80 degrees, the BrakeModule will disable OPENPILOT and prevent it from engaging until the temperature falls below that threshold (this shabang might is not necessary at least haven't been for me).
 
  <!--- For discussion of "old" cars impelementation of OPENPILOT join discord: discord server link here. ---> 
@@ -202,12 +237,18 @@ Some of the decoded CAN messages that is on E39 CAN bus can be found here: https
 
 If I have the inspiration to make of BM v0.3.3 I would: 
 - Fix HW bugs (funny I found few). 
-- Reduce part count (simplify).
+- ~~Reduce part count (simplify).~~
 - Get rid of extra DSC voltage divider circuit in the upper right corner of PCB (useless).
 - Maybe add (working) brake light switch low side sensing (redundancy).
-- Maybe 4 layer PCB design (could lower the power tracing resistance?)
-- Maybe use of different kind of power MOSFET (is the footprint right).
+- ~~Maybe 4 layer PCB design (could lower the power tracing resistance?)~~
+- ~~Maybe use of different kind of power MOSFET (is the footprint right).~~
 
+Follow up to above: Ditch (partly) the 0.3.3 went for 0.3.4 where the design changes will include:
+- Safety related HW (this just went overkill but going to test stuff and probably will revert some stuff later on)
+- Integrate Panda, steering angle sensor (connects to cars CAN bus) and [StepperServoCAN](https://github.com/dzid26/StepperServo-hardware) wirings
+- Do some simplifying and part changes
+- Add testing points for easier development
+- Add few new HW bugs
 
 ### Possible v0.4
 
