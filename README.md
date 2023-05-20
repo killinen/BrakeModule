@@ -248,6 +248,7 @@ Follow up to above: Ditch (partly) the 0.3.3 went for 0.3.4 where the design cha
 - Integrate Panda, steering angle sensor (connects to cars CAN bus) and [StepperServoCAN](https://github.com/dzid26/StepperServo-hardware) wirings
 - Do some simplifying and part changes
 - Add testing points for easier development
+- Add brownout detection
 - Add few new HW bugs
 
 ### Possible v0.4
