@@ -68,7 +68,7 @@ Video introducing OPENPILOT.
 
 [![](https://i3.ytimg.com/vi/NmBfgOanCyk/maxresdefault.jpg)](https://youtu.be/NmBfgOanCyk)
 
-At the moment, my implementation of the OPENPILOT only utilizes vision-based ACC (no radar) with stop and go capability. Lateral control is a work in progress. The top left of the screen shows the set speed of 87 km/h, and the top center shows the current speed as reduced by the vision system that detects the distance, speed, and acceleration/deceleration of the lead car.
+At the moment, my implementation of the OPENPILOT only utilizes vision-based ACC (no radar) with stop and go capability. Lateral control is a [work in progress](https://github.com/killinen/E39steerModule). The top left of the screen shows the set speed of 87 km/h, and the top center shows the current speed as reduced by the vision system that detects the distance, speed, and acceleration/deceleration of the lead car.
 
 
 https://user-images.githubusercontent.com/37126045/204889544-91e67136-c381-4791-b589-27530b2b94af.mp4
