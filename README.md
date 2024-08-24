@@ -3,6 +3,8 @@
 
 This project was created to solve the need for a MY99 BMW 540i (E39) to be able to brake using the semi-autonomous driving software OPENPILOT.
 
+This project has ended for me because, unfortunately, I no longer have the car. However, this was definitely fun to do.
+
 ---
 
 ### Disclaimer
